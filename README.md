@@ -5,6 +5,6 @@ Group project within the course **Data-X – applied data analytics models in re
 Authors: Petr Nguyen, Lukas Dolezal, Patrik Korsch, Daniel Bihany, Roman Pavlata
 
 # Mushroom classification
-We have been provided with a mushroom dataset (available at Kaggle), based on which we have to create a model which will classify whether or not is particular mushroom edible, given such features.
+We have been provided with a mushroom dataset (available at Kaggle), based on which we have to create a model which will classify whether or not is particular mushroom edible.
 
 Such tasks includes data understanding and exploration, data preprocessing including data preparation, feature engineering feature selection, building a model including hyperparameter tuning, with subsequent evaluation using metrics such as precision, recall or F1 score.
