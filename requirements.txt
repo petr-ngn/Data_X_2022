@@ -1,6 +1,5 @@
 asttokens==2.0.8
 backcall==0.2.0
-certifi @ file:///C:/b/abs_ac29jvt43w/croot/certifi_1665076682579/work/certifi
 charset-normalizer==2.1.1
 cloudpickle==2.2.0
 colorama==0.4.5
