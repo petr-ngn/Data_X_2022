@@ -4,6 +4,8 @@ Project within the course **Data-X – Applied Data Analytics Models in Real Wor
 
 Authors: Petr Nguyen, Lukas Dolezal, Patrik Korsch, Daniel Bihany, Roman Pavlata
 
+Deadline: 24/10/2022
+
 # Mushroom classification
 We have been provided with a mushroom dataset, based on which we have to create a model which will classify whether or not is particular mushroom edible.
 
