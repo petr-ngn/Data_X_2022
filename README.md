@@ -10,6 +10,9 @@ We have been provided with a mushroom dataset, based on which we have to create 
 
 Such tasks include data understanding and exploration, data preprocessing with feature engineering feature selection, building a model including hyperparameter tuning, with subsequent evaluation using metrics such as precision, recall and F1 score.
 
+## Repository structure and description
+TBD
+
 ## Machine Learning Flowchart
 TBD
 
