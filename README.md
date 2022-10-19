@@ -15,9 +15,9 @@ Such tasks include data understanding and exploration, data preprocessing with f
 ├── data		<- Data in raw form, transformed or data from third party sourcerss.
 │    │
 │    ├── category_names_kaggle.txt    <- Category names for mapping values (extracted from Kaggle).
-│    ├── interim.csv			  <- Data after Optimal Binning and WoE tranformation.
-│    ├── preprocessed.csv      	  <- Final preprocessed data after Binning, WoE transformation and feature selection.
-│    ├── raw.csv		      	  <- The original, immutable data dump.
+│    ├── interim.csv			            <- Data after Optimal Binning and WoE tranformation.
+│    ├── preprocessed.csv      	      <- Final preprocessed data after Binning, WoE transformation and feature selection.
+│    ├── raw.csv		      	          <- The original, immutable data dump.
 │
 ├── models		<- models which have been trained/fitted within out project (including objects for feature transformation and selection).
 │    │
@@ -48,6 +48,8 @@ import pickle
 model_loaded = pickle.load(open('model.h5', 'rb'))
 ```
 ### Importing the auxiliary functions
+_The functions have been built with Python version 3.9.13
+
 Download the src_PN folder and the final_notebook_aux_functions_imported.ipynb notebook (they need to stored in the same path/location). Or you can clone this whole repository.
 
 ```
