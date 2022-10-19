@@ -41,7 +41,12 @@ Such tasks include data understanding and exploration, data preprocessing with f
 ├── requirements.txt                  <- requirements file for reproducing the project.
 ```
 
-
+### Loading a model
+Use pickle package for loading the model to your workingspace.
+``` bash
+import pickle
+model_loaded = pickle.load(open('model.h5', 'rb'))
+```
 
 
 
