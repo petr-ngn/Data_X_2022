@@ -65,9 +65,7 @@ Afterward, you will be able to import the auxiliary functions:
 ``` bash
 import src_PN.aux_functions as aux
 ```
-
-
-
+Otherwise, if you do not want to import the auxiliary functions as a module, you can download the notebook final_notebook_aux_functions_included.ipynb, in which the functions are defined directly.
 
 ## Machine Learning Flowchart
 TBD
