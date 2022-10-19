@@ -15,9 +15,9 @@ Such tasks include data understanding and exploration, data preprocessing with f
 ├── data		<- Data in raw form, transformed or data from third party sourcerss.
 │    │
 │    ├── category_names_kaggle.txt    <- Category names for mapping values (extracted from Kaggle).
-│    ├── interim.csv			            <- Data after Optimal Binning and WoE tranformation.
+│    ├── interim.csv                  <- Data after Optimal Binning and WoE tranformation.
 │    ├── preprocessed.csv      	      <- Final preprocessed data after Binning, WoE transformation and feature selection.
-│    ├── raw.csv		      	          <- The original, immutable data dump.
+│    ├── raw.csv                      <- The original, immutable data dump.
 │
 ├── models		<- models which have been trained/fitted within out project (including objects for feature transformation and selection).
 │    │
