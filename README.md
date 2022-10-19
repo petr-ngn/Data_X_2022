@@ -71,7 +71,7 @@ Otherwise, if you do not want to import the auxiliary functions as a module, you
 
 ## Machine Learning Flowchart
 TBD
-![alt_text](https://drive.google.com/file/d/1txBb9-aYoJ1uADGsw8Nqv43-kSxTSY3E/view?usp=sharing)
+![alt_text](https://github.com/petr-ngn/Data_X_2022/blob/main/flowchart_data_x.png?raw=true)
 
 ## Data Preprocessing
 TBD (Binning + WoE)
