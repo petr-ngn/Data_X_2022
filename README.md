@@ -37,7 +37,7 @@ Such tasks include data understanding and exploration, data preprocessing with f
 │    ├── final_notebook_aux_functions_included.ipynb <- Final notebook including the auxiliary functions in it.
 │
 ├── README.md                         <- The top-level README for readers using this project.
-├── Report					                  <- Documentation of our project within the course submission.
+├── Report                            <- Documentation of our project within the course submission.
 ├── requirements.txt                  <- requirements file for reproducing the project.
 ```
 
