@@ -47,7 +47,24 @@ Use pickle package for loading the model to your workingspace.
 import pickle
 model_loaded = pickle.load(open('model.h5', 'rb'))
 ```
+### Importing the auxiliary functions
+Download the src_PN folder and the final_notebook_aux_functions_imported.ipynb notebook (they need to stored in the same path/location). Or you can clone this whole repository.
 
+
+
+Afterward, you will be able to import the auxiliary functions:
+```
+├── Your location
+|       |
+│       ├── src_PN
+│       │      ├── __init__.py
+│       │      ├── aux_functions.py 
+│       │
+|       ├── final_notebook_aux_functions_imported.ipynb
+```
+``` bash
+import src_PN.aux_functions as aux
+```
 
 
 
