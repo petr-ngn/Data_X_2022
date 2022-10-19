@@ -26,9 +26,9 @@ Such tasks include data understanding and exploration, data preprocessing with f
 │    ├── final_model.h5               <- The final optimized model trained on joined training and validation set.
 │    ├── rfe_model.h5                 <- RFE object for feature selection.
 │
-├── notebooks     <- All the Python scripts and Jupyter notebooks used in the project. 
+├── notebooks      <- All the Python scripts and Jupyter notebooks used in the project. 
 │    │
-│    ├── src_PN   <- Module containing auxiliary functions.
+│    ├── src_PN    <- Module containing auxiliary functions.
 │    │     │
 │    │     ├── __init__.py            <- __init__ for treating src_PN as a module.
 │    │     ├── aux_functions.py       <- Auxiliary functions used solely in the notebook.
