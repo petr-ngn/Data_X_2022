@@ -42,7 +42,7 @@ Such tasks include data understanding and exploration, data preprocessing with f
 ```
 
 ### Loading a model
-Use pickle package for loading the model to your workingspace.
+Use `pickle` package for loading the model to your working space.
 ``` bash
 import pickle
 model_loaded = pickle.load(open('model.h5', 'rb'))
