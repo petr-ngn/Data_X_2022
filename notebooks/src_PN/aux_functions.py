@@ -890,13 +890,14 @@ def evaluation_metrics(x_set, true_labels, model, metrics_list):
         
     """
 
-    metrics = {'AUC': roc_auc_score,
-                'Gini': roc_auc_score,
-                'Brier': brier_score_loss, 
-                'KS': ks_2samp, 
+    metrics = {'F1': f1_score,
                 'Precision': precision_score, 
                 'Recall': recall_score, 
-                'F1': f1_score}
+                'Accuracy': accuracy_score,
+                'AUC': roc_auc_score,
+                'Gini': roc_auc_score,
+                'KS': ks_2samp, 
+                'Brier': brier_score_loss}
 
     if len(list(set(metrics_list) - set(list(metrics.keys())))) !=0:
         raise ValueError('These metrics are not acceptable'.format(list(set(metrics_list) - set(list(metrics.keys())))))
@@ -911,11 +912,11 @@ def evaluation_metrics(x_set, true_labels, model, metrics_list):
         elif met in class_evs:
             evs_list.append([met, metrics[met](true_labels, model.predict(x_set))])
         elif met == 'Gini':
-            evs_list.append([met, 2 * metrics['AUC'](true_labels, model.predict_proba(x_set)[:, 1]) - 1])
+            evs_list.append([met, 2 *  metrics[met](true_labels, model.predict_proba(x_set)[:, 1]) - 1])
         elif met == 'KS':
             X_Y_concat = pd.concat((true_labels, x_set), axis=1)
             X_Y_concat['prob'] =  model.predict_proba(x_set)[:, 1]
-            evs_list.append([met, ks_2samp(X_Y_concat.loc[X_Y_concat['class'] == 1, 'prob'], X_Y_concat.loc[X_Y_concat['class'] == 0, 'prob'])[0]])
+            evs_list.append([met,  metrics[met](X_Y_concat.loc[X_Y_concat['class'] == 1, 'prob'], X_Y_concat.loc[X_Y_concat['class'] == 0, 'prob'])[0]])
 
             
     return pd.DataFrame(evs_list, columns = ['Metric', 'Score'])
@@ -944,7 +945,8 @@ def shap_plots(x_set, model):
 
         if type(model) == type(GradientBoostingClassifier()):
             shap.summary_plot(shap_values, x_set.values, feature_names = x_set.columns)
-        else:
+
+        elif type(model) == type(RandomForestClassifier()):
             shap.summary_plot(shap_values[1], x_set.values, feature_names = x_set.columns)
 
     elif type(model) == type(LogisticRegression()):
@@ -987,6 +989,7 @@ def ROC_curve_plot(y_test_true, x_test, model):
 
     for spine in ['top', 'right', 'left']:
         ax.spines[spine].set_visible(False)
+
     plt.grid()
     plt.legend()
     plt.show()
