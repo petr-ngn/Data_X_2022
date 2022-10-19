@@ -11,6 +11,7 @@ We have been provided with a mushroom dataset, based on which we have to create 
 Such tasks include data understanding and exploration, data preprocessing with feature engineering feature selection, building a model including hyperparameter tuning, with subsequent evaluation using metrics such as precision, recall and F1 score.
 
 ## Repository structure and description
+```
 ├── data		<- Data in raw form, transformed or data from third party sourcerss.
 │    │
 │    ├── category_names_kaggle.txt    <- Category names for mapping values (extracted from Kaggle).
@@ -38,7 +39,7 @@ Such tasks include data understanding and exploration, data preprocessing with f
 ├── README.md                         <- The top-level README for readers using this project.
 ├── Report					  <- Documentation of our project within the course submission.
 ├── requirements.txt                  <- requirements file for reproducing the project.
-
+```
 
 
 
