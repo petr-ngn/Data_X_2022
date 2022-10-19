@@ -4,7 +4,7 @@ Repository for the project within the course **Data-X – Applied Data Analytics
 
 _**Authors:**_ Petr Nguyen, Lukas Dolezal, Roman Pavlata, Patrik Korsch, Daniel Bihany
 
-Deadline: 24/10/2022
+_**Deadline:**_ 24/10/2022
 
 We have been provided with a mushroom dataset, based on which we have to create a model which will classify whether or not is particular mushroom edible.
 
