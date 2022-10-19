@@ -11,50 +11,38 @@ We have been provided with a mushroom dataset, based on which we have to create 
 Such tasks include data understanding and exploration, data preprocessing with feature engineering feature selection, building a model including hyperparameter tuning, with subsequent evaluation using metrics such as precision, recall and F1 score.
 
 ## Repository structure and description
-├── LICENSE
-├── Makefile           <- Makefile with commands like `make data` or `make train`
-├── README.md          <- The top-level README for developers using this project.
-├── data
-│   ├── external       <- Data from third party sources.
-│   ├── interim        <- Intermediate data that has been transformed.
-│   ├── processed      <- The final, canonical data sets for modeling.
-│   └── raw            <- The original, immutable data dump.
+├── data		<- Data in raw form, transformed or data from third party sourcerss.
+│    │
+│    ├── category_names_kaggle.txt    <- Category names for mapping values (extracted from Kaggle).
+│    ├── interim.csv			  <- Data after Optimal Binning and WoE tranformation.
+│    ├── preprocessed.csv      	  <- Final preprocessed data after Binning, WoE transformation and feature selection.
+│    ├── raw.csv		      	  <- The original, immutable data dump.
 │
-├── docs               <- A default Sphinx project; see sphinx-doc.org for details
+├── models		<- models which have been trained/fitted within out project (including objects for feature transformation and selection).
+│    │
+│    ├── binning_woe_model.h5         <- Optimal Binning and WoE transformation object (for feature preprocessing).
+│    ├── feature_selection_model.h5   <- Optimized model used within feature selection (RFE).
+│    ├── final_model.h5               <- The final optimized model trained on joined training and validation set.
+│    ├── rfe_model.h5                 <- RFE object for feature selection.
 │
-├── models             <- Trained and serialized models, model predictions, or model summaries
+├── notebooks     <- All the Python scripts and Jupyter notebooks used in the project. 
+│    │
+│    ├── src_PN   <- Module containing auxiliary functions.
+│    │     │
+│    │     ├── __init__.py            <- __init__ for treating src_PN as a module.
+│    │     ├── aux_functions.py       <- Auxiliary functions used solely in the notebook.
+│    │
+│    ├── final_notebook_aux_functions_imported.ipynb <- Final notebook to which the auxiliary functions are imported as module.
+│    ├── final_notebook_aux_functions_included.ipynb <- Final notebook including the auxiliary functions in it.
 │
-├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-│                         the creator's initials, and a short `-` delimited description, e.g.
-│                         `1.0-jqp-initial-data-exploration`.
-│
-├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-│
-├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-│   └── figures        <- Generated graphics and figures to be used in reporting
-│
-├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-│                         generated with `pip freeze > requirements.txt`
-│
-├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
-├── src                <- Source code for use in this project.
-│   ├── __init__.py    <- Makes src a Python module
-│   │
-│   ├── data           <- Scripts to download or generate data
-│   │   └── make_dataset.py
-│   │
-│   ├── features       <- Scripts to turn raw data into features for modeling
-│   │   └── build_features.py
-│   │
-│   ├── models         <- Scripts to train models and then use trained models to make
-│   │   │                 predictions
-│   │   ├── predict_model.py
-│   │   └── train_model.py
-│   │
-│   └── visualization  <- Scripts to create exploratory and results oriented visualizations
-│       └── visualize.py
-│
-└── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
+├── README.md                         <- The top-level README for readers using this project.
+├── Report					  <- Documentation of our project within the course submission.
+├── requirements.txt                  <- requirements file for reproducing the project.
+
+
+
+
+
 
 
 
