@@ -41,12 +41,16 @@ Such tasks include data understanding and exploration, data preprocessing with f
 ├── requirements.txt                  <- requirements file for reproducing the project.
 ```
 
-### Loading a model
-Use `pickle` package for loading the model to your working space.
-``` bash
-import pickle
-model_loaded = pickle.load(open('model.h5', 'rb'))
+### Installing the enviroment
+First of all before running any scripts or notebooks, you should first install the enviroment. Ideally, you should create a new enviroment using Python version 3.9.13, since all the functions and module used in our notebooks have been running on such version.
+
+You can create such enviroment in Anaconda, in the terminal as:
+```bash
+conda create -n yourenv python=3.9.13
 ```
+
+
+
 ### Importing the auxiliary functions
 _The functions have been built with Python version 3.9.13_
 
@@ -69,6 +73,12 @@ import src_PN.aux_functions as aux
 ```
 Otherwise, if you do not want to import the auxiliary functions as a module, you can download the notebook `final_notebook_aux_functions_included.ipynb`, in which the functions are defined directly.
 
+### Loading a model
+Use `pickle` package for loading the model to your working space.
+``` bash
+import pickle
+model_loaded = pickle.load(open('model.h5', 'rb'))
+```
 ## Machine Learning Flowchart
 TBD
 ![alt_text](https://github.com/petr-ngn/Data_X_2022/blob/main/flowchart_data_x.png?raw=true)
