@@ -93,9 +93,7 @@ TBD
 ![alt_text](https://github.com/petr-ngn/Data_X_2022/blob/main/flowchart_data_x.png?raw=true)
 
 ## Data Preprocessing
-To convert categorical features into nummerical ones, the most basic approach is to perform dummy encoding. However, due to the larger amounts of features and their categories, we would have ended up with very large dimensionality of the data, which could lead to the overfitting.
-For this case, we use one of the most used approach which is very common in credit risk modelling - Weight of Evidence Encoding.
-TBD (Binning + WoE)
+After the data split into training set, validation set and test set (70%; 15%; 15%); we have to convert the categorical features into numerical ones. For this case, we use ´optbinning´ package.
 
 ## Feature selection
 TBD (Bayesian Optimization + RFE; fit on training set)
@@ -105,8 +103,4 @@ TBD (Bayesian Optimization; fit on training set with selected features by RFE; e
 
 ## Evaluation
 TBD (evaluation on test set; confusion matrix, F1/Recall/Precision/Accuracy/AUC/Gini/Brier, Kolmogorov-Smirnov, ROC Curve, Learning Curve, SHAP values).
-Once we build the final model, we evaluate such model on the hold out set which did not enter the model building (nor feature selection and hyperparameter tuning) - the test set.
-
-We use the most common metrics which can be derived from the confusion matrix, such as Accuracy, Precision, Recall or F1 score. Further, other metrics are used, such as AUC, Gini coefficient, Kolmogorov-Smirnov distance or Brier score loss.
-Moreover, we also visualize the model performance using ROC curve, Learning curve or SHAP values.
 
