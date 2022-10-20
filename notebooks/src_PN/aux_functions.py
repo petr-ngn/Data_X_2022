@@ -15,7 +15,7 @@ import seaborn as sns
 
 from optbinning import BinningProcess
 
-from sklearn.model_selection import train_test_split, cross_val_score, StratifiedKFold, learning_curve
+from sklearn.model_selection import train_test_split, StratifiedKFold, learning_curve
 from sklearn.feature_selection import RFECV
 from itertools import compress
 from skopt import BayesSearchCV
@@ -28,7 +28,7 @@ from sklearn.tree import DecisionTreeClassifier
 
 from sklearn.metrics import roc_auc_score, precision_score, f1_score, recall_score, brier_score_loss, confusion_matrix, roc_curve, accuracy_score
 
-from scipy.stats import ks_2samp
+from scipy.stats import chi2_contingency, ks_2samp
 import shap
 
 
@@ -48,7 +48,7 @@ def reading_data(file_path = None):
     
                 - If you type your file path with single back slashes (\) separating the folder names, you should either:
                         (1) replace them with double back slashes (\\) or,
-                        (2)with forward slashes (/) or,
+                        (2) with forward slashes (/) or,
                         (3) put letter r in front of the string.
         
                         More information about the solution can be found here: https://stackoverflow.com/questions/1347791/unicode-error-unicodeescape-codec-cant-decode-bytes-cannot-open-text-file"
@@ -97,7 +97,7 @@ def reading_cats_names_kaggle(file_path = None):
 
     """
 
-    Function for extracting and displaying full categories' and their initials per each variable.
+    Function for extracting and displaying full categories' names and their initials per each variable.
         - This information was explicitly extracted from Kaggle and then uploaded to GitHub.
 
     Arguments:
@@ -106,13 +106,13 @@ def reading_cats_names_kaggle(file_path = None):
     
                 - If you type your file path with single back slashes (\) separating the folder names, you should either:
                     (1) replace them with double back slashes (\\) or,
-                    (2)with forward slashes (/) or,
+                    (2) with forward slashes (/) or,
                     (3) put letter r in front of the string.
 
                     More information about the solution can be found here: https://stackoverflow.com/questions/1347791/unicode-error-unicodeescape-codec-cant-decode-bytes-cannot-open-text-file"
 
     Output:
-        Data frame which contain the feature names, the initials of its categories and the full names of its categories.
+        Data frame which contains the feature names, the initials of its categories and the full names of its categories.
         
     """
 
@@ -176,7 +176,7 @@ def mapping_cat_names(raw_data, cat_names_df):
 
     Arguments:
         raw_data - Data frame of raw data which contains initials of categories (which we want to replace with the full name of categories).
-        cat_names_df - Data frame which contain the feature names, the initials of its categories and the full names of its categories - output from the function reading_cats_names_kaggle()
+        cat_names_df - Data frame which contains the feature names, the initials of its categories and the full names of its categories - output from the function reading_cats_names_kaggle()
 
     Output:
         Data frame of the input data which contains full categories' names.
@@ -204,7 +204,7 @@ def feat_dist_plot(data, conditional = False):
         - It can either display unconditional distribution or a distribution conditional on the target variable.
 
     Arguments:
-        data - Dataframe which contains data about the features.
+        data - Dataframe which contains data about the features (and about the target optionally).
         conditional - True if we want to depict the features distribution conditional on the target variable, otherwise False.
     Output:
         Plot containing (conditional) distribution of each feature.
@@ -230,6 +230,45 @@ def feat_dist_plot(data, conditional = False):
 
     fig.tight_layout()
     plt.show()
+
+
+
+
+
+def dependency_analysis(data, var1, var2 = 'class', alpha = 0.05):
+
+    
+    """
+
+    This function performs dependency analysis using chi-squared statistics. (Created by Lukas Dolezal, adjusted by Petr Nguyen)
+        - H0 = On given confidence level, the occurrence of outcomes is statistically independent.
+        - H1 = Non H0
+
+    Arguments:
+        data - Data frame containing data about the variables (on which the chi-squared hypothesis test will be applied).
+        var1 - string name of the column/variable.
+        var2 - string name of the column/variable - by default we want to perform the test with respect to the target variable.
+        alpha = Confidence level; 0.05 by default.
+
+    Outputs:
+        - Print of the p-value and result of hypothesis testing.
+        - Data frame of the frequency table.
+    
+    """
+
+
+    data_crosstab = pd.crosstab(data[var1], data[var2], margins = False)
+
+    chi2, p, dof, expected = chi2_contingency(data_crosstab, correction = False)
+
+    print(f'The p-value is {p}.')
+
+    if p <= alpha:
+        print(f'Result: We reject the null hypothesis: There is a relationship between {var1} and {var2}, thus they are dependent.')
+    else:
+        print(f'Result: We fail to reject the null hypothesis: There is no relationship between {var1} and {var2}, thus they are independent.')
+
+    return data_crosstab
 
 
 
@@ -348,7 +387,7 @@ def prep_data_export(features, labels, ind_sets, export = False, csvname = ''):
         csvname - The name of the csv file.
     
     Output:
-        Data frame - which has join Training/Validation/Test features and labels.
+        Data frame - which do have joined Training/Validation/Test features and labels.
 
     """
 
@@ -400,13 +439,13 @@ def woe_bins_plot(bins_woe,x_set):
 
     """
 
-    Function for plotting the WoE values of each features' categories
+    Function for plotting the WoE values of each features' categories.
     
     Arguments:
         bins_woe - Data frame which contains information about binned features' categories (including WoE values).
     
     Output:
-        Plot containing WoE distribution of features categories.
+        Plot containing WoE distribution of features' categories.
     
     """
 
@@ -445,7 +484,7 @@ def cats_indicators(x_set, bins_woe, target_class = 'edible'):
 
     """
 
-    #Filter the subset of features categories which satisfy the condition.
+    #Filter the subset of features' categories which satisfy the WoE-target_class condition.
     if target_class == 'edible':
         filtered_woe_bins = bins_woe[bins_woe['WoE']<= 0]
 
@@ -481,7 +520,7 @@ def bayesian_optimization(model, x_train, y_train, seed, max_features_constraint
 
     """
 
-    This function tune hyperparameters of a model using Bayesian Optimization while maximizing objective function F1 score, and its tuned on the training set.
+    This function tunes hyperparameters of a model using Bayesian Optimization while maximizing objective function F1 score, and it is tuned on the training set.
         - It is tuned using Stratified 10-fold Cross Validation.
 
     Arguments:
@@ -489,9 +528,12 @@ def bayesian_optimization(model, x_train, y_train, seed, max_features_constraint
         x_train - Data frame which contains features used for training the model.
         y_train - Data frame (or series) which contains labels for training the model.
         seed - Globally defined random seed in order to preserve the reproducibility.
-        max_features_constraint - This argument needs to set to True when tuning model which has hypeparameter max_features
-                                - It can raise a value error in hyperparameter tuning within selection of final model, when the max_features is out of the range of the max_features possible values (search space).
+        max_features_constraint - This argument needs to bet set to True when tuning model which has hypeparameter max_features
+                                - It can raise a value error in hyperparameter tuning within selection of final model, when max_features is higher than the number of features in the sammple.
                                         - "ValueError: max_features must be in (0, n_features]"
+                                        - This issue can occur when model A chooses 5 features in the feature selection, but when tuning model B on the sample having 5 features chosen by model B, during tuning the max_features can exceed the number of features.
+                                        - Therefore, the max_features needs to be adjusted accordingly to the number of features within given sample.
+    
     Output:
         Model with the tuned hyperparameters.
 
@@ -589,22 +631,24 @@ def feat_selection(x_train, y_train, models_dict, seed):
                 model_name - The name of the model (the model within the models_dict parameter)
                 model - The model itself with the tuned hyperparameters which then has been used within RFE (feature selection)
                 rfe_model - RFE object itself (when applying transform() method, it should transform given X_set on on the X set with optimal features).
-                n_features - Number of features (in the training set) on which the tuned_model has been trained.
-                final_features - The list of features on which the tuned_model has been trained.
-                execution_time - How long it takes to tuned hyperparameters model (in seconds).
+                n_features - Number of features selected by RFE.
+                final_features - The list of features selected by RFE.
+                execution_time - How long it takes to tune model's hyperparameters and choose the optimal features (in seconds).
 
     """
     
-    #Empty list for all the models with their tuned hyperparameters, number of features selected, and names of selected features.
+    #Empty list for storing all the models with their tuned hyperparameters, number of features selected, and names of selected features.
     models_feats_list = []
 
-    #For each model, tune its hyperparameters using Bayesian Optimization, and then use tuned model for feature selection using RFE with maximizing an objective function F1 Score.
+    #For each model, tune its hyperparameters using Bayesian Optimization, and then use the tuned model for feature selection using RFE while maximizing an objective function F1 Score.
     for name, mod in models_dict.items():
         print(f'Starting Feature Selection with {name} ...', '\n')
 
         start = time.time()
         print(f'Starting Bayesian Optimization of {name} ...')
+
         opt_mod = bayesian_optimization(mod, x_train, y_train, seed)
+
         print(f'Bayesian Optimization of {name} finished  ...')
 
         #Initialization of the stratified 10-fold cross validation.
@@ -620,6 +664,7 @@ def feat_selection(x_train, y_train, models_dict, seed):
             num_feats = 1
 
         print(f'Starting Recursive Feature Elimination with {name} ...')
+
         #Initialization of the Recursive Feature Elimination 10-fold Cross Validation in order to select the optimal number of features,...
             # ... based on the model with tuned hyperparameters and maximizing F1 score function.
         rfecv = RFECV(
@@ -629,6 +674,7 @@ def feat_selection(x_train, y_train, models_dict, seed):
                     )
     
         rfecv.fit(x_train, y_train)
+
         print(f'Recursive Feature Elimination with {name} finished ...')
         end = time.time()
 
@@ -664,7 +710,7 @@ def hyperparameter_tuning(x_train, y_train, x_val, y_val, models_dict, feat_sel,
         x_val - Data frame which contains features used for evaluation on validation set. (to select the final model)
         y_val -  Data frame (or series) which contains labels evaluation on validation set. (to select the final model)
         models_dict - Dictionary where the keys are model names and the values are the model objects with default hyperparameters.
-        feat_sel - Data fram
+        feat_sel - Data frame outputted by feat_selection() function, which contains data about each model such as the model name, model itself tuned within feature selection, number and name of the final features.
         seed - Globally defined random seed in order to preserve the reproducibility.
 
     For each model (with default hyperparameters) and for each set of selected features (by RFEE), tune its hyperparameters on the training set with given selected features,...
@@ -682,7 +728,7 @@ def hyperparameter_tuning(x_train, y_train, x_val, y_val, models_dict, feat_sel,
                 n_features - Number of features (in the training set) on which the tuned_model has been trained.
                 final_features - The list of features on which the tuned_model has been trained.
                 execution_time - How long it takes to tuned hyperparameters model (in seconds).
-                ... Then follow columns which are the metrics such as AUC, Gini, Brier, KS, Precision, Recall and F1.
+                ... Then follow the columns which are the metrics such as AUC, Gini, Brier, KS, Precision, Recall and F1.
 
     """
 
@@ -694,8 +740,8 @@ def hyperparameter_tuning(x_train, y_train, x_val, y_val, models_dict, feat_sel,
                 'Accuracy': accuracy_score,
                 'AUC': roc_auc_score, 
                 'Gini': roc_auc_score, 
-                'Brier': brier_score_loss, 
-                'KS': ks_2samp, 
+                'KS': ks_2samp,
+                'Brier': brier_score_loss
                 }
 
     probs_evs = ['AUC','Brier']
@@ -752,12 +798,12 @@ def hyperparameter_tuning(x_train, y_train, x_val, y_val, models_dict, feat_sel,
                             ).sort_values(
 
                                         ['F1', 'Precision', 'Recall', 'Accuracy',
-                                            'AUC', 'Gini', 'KS', 'Brier'],
+                                        'AUC', 'Gini', 'KS', 'Brier'],
 
                                         ascending = [False, False, False, False,
-                                                False, False, False, True]
+                                                    False, False, False, True]
 
-                                            ).reset_index(drop = True)
+                                        ).reset_index(drop = True)
 
     return hyp_df
 
@@ -769,6 +815,8 @@ def data_filter_join(hyp_tuning_df, x_train, x_valid, x_test, y_train, y_valid, 
 
     """
 
+    Function which joins the training and validation sets of features and labels into one set, and then filters only the relevant final features only (the latter also applies to the test set as well).
+ 
     Arguments:
         hyp_tuning_df
         x_train - Data frame of training set of features data.
@@ -800,16 +848,18 @@ def data_filter_join(hyp_tuning_df, x_train, x_valid, x_test, y_train, y_valid, 
 def final_model_fit(x_fit, y_fit, hyp_tuning_df, model_order = 0, save_models = [False, False, False]):
 
     """
+    Function for building/fitting the final, tuned, chosen model on the joined training and validation sets.
+        - Optionally, it can either export final model, feature selection and/or RFE object which are related to the final model.
     
     Arguments:
         x_fit - Data frame containing features data, on which the data will be trained.
         y_fit - Data frame/Series containing label data, on which the data will be trained.
-        hyp_tuning_df
+        hyp_tuning_df - Data frame outputted by hyperparameter_tuning() function, which contains data about the each tuned model such as the model name, model itself, number and name of the final features, scores etc.
         model_order - by default 0, is we want to select the highest ranked model (which has row index 0 in hyp_tuning_df)
         save_models - list of 3 Booleans which indicates whether to save given models in the h5 format.
             - 1st Boolean for saving the tuned feature selection model.
             - 2nd Boolean for saving the fit RFE model.
-            - 3rd model for saving the final, tuned model.
+            - 3rd Boolean for saving the final, tuned model.
         
     Output:
         - fitted model
@@ -925,39 +975,6 @@ def evaluation_metrics(x_set, true_labels, model, metrics_list):
 
 
 
-def shap_plots(x_set, model):
-
-    """
-
-    Function for plotting SHAP values.
-
-    Arguments:
-        x_set - Data frame containing set of features.
-        model - fitted model ready for predictions.
-
-    Output:
-        Plot - of SHAP values per feature.
-
-    """
-
-    if type(model) in [type(RandomForestClassifier()), type(DecisionTreeClassifier()), type(GradientBoostingClassifier())]:
-        shap_values = shap.TreeExplainer(model).shap_values(x_set)
-
-        if type(model) == type(GradientBoostingClassifier()):
-            shap.summary_plot(shap_values, x_set.values, feature_names = x_set.columns)
-
-        elif type(model) == type(RandomForestClassifier()):
-            shap.summary_plot(shap_values[1], x_set.values, feature_names = x_set.columns)
-
-    elif type(model) == type(LogisticRegression()):
-        shap.summary_plot(shap.LinearExplainer(model,
-                                        shap.maskers.Independent(data = x_set)).shap_values(x_set),
-                                        x_set.values, feature_names = x_set.columns)
-
-
-
-
-
 def ROC_curve_plot(y_test_true, x_test, model):
 
     """
@@ -1006,8 +1023,9 @@ def learning_curve_plot(model, x_set, y_set, seed):
 
     Arguments:
         model - Fitted model ready for predictions.
-        x_set - Data frame containing features data on which the model has been/will be trained on.
-        y_set - Data frame/series containing labels data on which the model has been/will be trained on.
+        x_set - Data frame containing features data on which the model has been trained on.
+        y_set - Data frame/series containing labels data on which the model has been trained on.
+        seed - Globally defined random seed in order to preserve the reproducibility.
 
     Output - Plot of learning curve on training set and hold out set.
 
@@ -1050,3 +1068,36 @@ def learning_curve_plot(model, x_set, y_set, seed):
     plt.grid()
     plt.legend(loc = 'best')
     plt.show()
+
+
+
+
+
+def shap_plots(x_set, model):
+
+    """
+
+    Function for plotting SHAP values.
+
+    Arguments:
+        x_set - Data frame containing set of features.
+        model - fitted model ready for predictions.
+
+    Output:
+        Plot - of SHAP values per feature.
+
+    """
+
+    if type(model) in [type(RandomForestClassifier()), type(DecisionTreeClassifier()), type(GradientBoostingClassifier())]:
+        shap_values = shap.TreeExplainer(model).shap_values(x_set)
+
+        if type(model) == type(GradientBoostingClassifier()):
+            shap.summary_plot(shap_values, x_set.values, feature_names = x_set.columns)
+
+        elif type(model) == type(RandomForestClassifier()):
+            shap.summary_plot(shap_values[1], x_set.values, feature_names = x_set.columns)
+
+    elif type(model) == type(LogisticRegression()):
+        shap.summary_plot(shap.LinearExplainer(model,
+                                        shap.maskers.Independent(data = x_set)).shap_values(x_set),
+                                        x_set.values, feature_names = x_set.columns)
