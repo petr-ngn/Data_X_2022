@@ -48,7 +48,7 @@ You can create such enviroment in Anaconda, in the terminal as:
 ```bash
 conda create -n yourenv python=3.9.13
 ```
-Once you have created your own enviroment, you should then install all the packages with correct versions which have been used in our notebooks and on which the module has been built as well. This is being done with the `requirements.txt` which you can find this repository. You should then download this file, open the Anaconda terminal, activate your enviroment as:
+Once you have created your own enviroment, you should then install all the packages with correct versions which have been used in our notebooks and on which the module has been built as well. This is being done with the `requirements.txt` which you can find int this repository. You should then download this file, open the Anaconda terminal, activate your enviroment as:
 
 ```bash
 conda activate yourenv
