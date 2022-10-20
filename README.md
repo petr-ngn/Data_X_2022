@@ -93,6 +93,8 @@ TBD
 ![alt_text](https://github.com/petr-ngn/Data_X_2022/blob/main/flowchart_data_x.png?raw=true)
 
 ## Data Preprocessing
+To convert categorical features into nummerical ones, the most basic approach is to perform dummy encoding. However, due to the larger amounts of features and their categories, we would have ended up with very large dimensionality of the data, which could lead to the overfitting.
+For this case, we use one of the most used approach which is very common in credit risk modelling - Weight of Evidence Encoding.
 TBD (Binning + WoE)
 
 ## Feature selection
