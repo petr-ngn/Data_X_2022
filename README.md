@@ -106,7 +106,7 @@ After the data split into training set, validation set and test set (70%; 15%; 1
 
 Once it bins the categories, we decide to transform these bins into numerical values by using Weight-of-Evidence Encoding which is commonly used in credit risk modelling and works better than dummy encoding when having larger amount of variables and categories/bins.
 
-$WoE_{X, c) = \ln\(\frac(x)\(x)$
+$WoE_{X, c) = \ln\(\frac(x)\(x))$
 
 
 After such transformation, we then exclude such features which do have only one bin/category after binning. These features have zero-variance, thus they would not add any contribution in terms of predictions.
