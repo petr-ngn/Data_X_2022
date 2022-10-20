@@ -109,15 +109,14 @@ Once it bins the categories, we decide to transform these bins into numerical va
 After such transformation, we then exclude such features which do have only one bin/category after binning. These features have zero-variance, thus they would not add any contribution in terms of predictions.
 
 ## Feature selection
-TBD (Bayesian Optimization + RFE; fit on training set)
 Once we have our data prepared, we move to the next step which the feature selection. We use an iterative process - each model with default hyperparameters is tuned using Bayesian Optimization with Stratified 10-fold Cross Validation. Afterwards, such tuned model is then used within Recursive Feature Elimination (RFE) with 10-fold Cross Validation which outputs a set of optimal features. Both tuning and feature selection is being conducted on the training set while maximizing an objective function of F1 score. Assuming $n$ models, we end up with $n$ sets of optimal features.
 
 ## Final Model Selection and Final Model Building.
-TBD (Bayesian Optimization; fit on training set with selected features by RFE; evaluation on validation set)
 The next step is the selection of the final model. Again we use an iterative process - each model with default hyperparameters is tuned on ach set of features selected within RFE in the previous step, particularly on training set. This optimization is again being conducted on the training set while maximizing an objective function of F1 score. Then, each tuned model is then evaluated on the validation set. We select the final model based on the best scores evaluated on the validation set.
 
-This final model is then built/fitted on the joined training and validation set.
+This final model is then built/fitted on the joined training and validation set which do have only the optimal features which are related to this final model (on which the final model has been fitted on the training set within the final model selection).
 
 ## Evaluation
-TBD (evaluation on test set; confusion matrix, F1/Recall/Precision/Accuracy/AUC/Gini/Brier, Kolmogorov-Smirnov, ROC Curve, Learning Curve, SHAP values).
+Once the model is built, we then evalute it on the hold out set - test set. We calculate such metrics which can be derived from the confusion matrix, such as Accuracy, Precision, Recall or F1 score. We also calculate other metrics which can be derived from the estimated probabilities, such as AUC, Gini coefficient, Kolmogorov-Smirnov test or Brier score loss.
 
+Besides, we also construct a ROC curve and Learning curve to depict the model performance, as well as the plot of SHAP values to depict the contributions of features to a prediction.
