@@ -93,7 +93,7 @@ TBD
 ![alt_text](https://github.com/petr-ngn/Data_X_2022/blob/main/flowchart_data_x.png?raw=true)
 
 ## Data Preprocessing
-After the data split into training set, validation set and test set (70%; 15%; 15%); we have to convert the categorical features into numerical ones. For this case, we use `optbinning` package, which is available [here](https://github.com/guillermo-navas-palencia/optbinning).
+After the data split into training set, validation set and test set (70%; 15%; 15%); we have to convert the categorical features into numerical ones. For this case, we use `optbinning` package, which is available [here](https://github.com/guillermo-navas-palencia/optbinning). It uses optimal binning with respect to the target variable by rigorous and flexible mathematical programming formulation - in other words, it optimally groups the features' categories into bins. It can be either uses for continuous features, where instead of grouping, the data will be optimally split into interval bins.
 
 ## Feature selection
 TBD (Bayesian Optimization + RFE; fit on training set)
