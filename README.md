@@ -105,4 +105,8 @@ TBD (Bayesian Optimization; fit on training set with selected features by RFE; e
 
 ## Evaluation
 TBD (evaluation on test set; confusion matrix, F1/Recall/Precision/Accuracy/AUC/Gini/Brier, Kolmogorov-Smirnov, ROC Curve, Learning Curve, SHAP values).
+Once we build the final model, we evaluate such model on the hold out set which did not enter the model building (nor feature selection and hyperparameter tuning) - the test set.
+
+We use the most common metrics which can be derived from the confusion matrix, such as Accuracy, Precision, Recall or F1 score. Further, other metrics are used, such as AUC, Gini coefficient, Kolmogorov-Smirnov distance or Brier score loss.
+Moreover, we also visualize the model performance using ROC curve, Learning curve or SHAP values.
 
