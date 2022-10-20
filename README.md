@@ -89,7 +89,9 @@ import pickle
 model_loaded = pickle.load(open('model.h5', 'rb'))
 ```
 ## Machine Learning Flowchart
-TBD
+First, we import all the relevant data to the working space, with following data inspection and data understanding and exploration. Afterwards, the data split into training, validation and sets following with further data preprocessing in the form of binning and Weight-of-Evidence Encoding.
+
+Once we have our data prepared, we performe an iterative process for feature selection using RFE in combination with hyperparameter tuning using Bayesian Optimization - the latter optimized the input model by tuning its hyperparameters and then this tuned model is used as an input within RFE. This results in the  $n$ different set of optimal features, assuming we have $n$ input models.
 ![alt_text](https://github.com/petr-ngn/Data_X_2022/blob/main/flowchart_data_x.png?raw=true)
 
 ## Data Preprocessing
