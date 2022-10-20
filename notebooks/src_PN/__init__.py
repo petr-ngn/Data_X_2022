@@ -9,7 +9,7 @@ import seaborn as sns
 
 from optbinning import BinningProcess
 
-from sklearn.model_selection import train_test_split, cross_val_score, StratifiedKFold, learning_curve
+from sklearn.model_selection import train_test_split, StratifiedKFold, learning_curve
 from sklearn.feature_selection import RFECV
 from itertools import compress
 from skopt import BayesSearchCV
@@ -22,5 +22,5 @@ from sklearn.tree import DecisionTreeClassifier
 
 from sklearn.metrics import roc_auc_score, precision_score, f1_score, recall_score, brier_score_loss, confusion_matrix, roc_curve, accuracy_score
 
-from scipy.stats import ks_2samp
+from scipy.stats import chi2_contingency, ks_2samp
 import shap
