@@ -93,7 +93,7 @@ TBD
 ![alt_text](https://github.com/petr-ngn/Data_X_2022/blob/main/flowchart_data_x.png?raw=true)
 
 ## Data Preprocessing
-After the data split into training set, validation set and test set (70%; 15%; 15%); we have to convert the categorical features into numerical ones. For this case, we use ´optbinning´ package.
+After the data split into training set, validation set and test set (70%; 15%; 15%); we have to convert the categorical features into numerical ones. For this case, we use `optbinning` package.
 
 ## Feature selection
 TBD (Bayesian Optimization + RFE; fit on training set)
