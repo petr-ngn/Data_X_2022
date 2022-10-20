@@ -94,6 +94,9 @@ First, we import all the relevant data to the working space, with following data
 Once we have our data prepared, we performe an iterative process for feature selection using RFE in combination with hyperparameter tuning using Bayesian Optimization - the latter optimized the input model by tuning its hyperparameters and then this tuned model is used as an input within RFE. This results in $n$ different set of optimal features, assuming we have $n$ input models.
 
 After the feature selection, we perform the selection of the final model. For each input model, we tune its hyperparemeters with Bayesian Optimization on each set of optimal features selected within feature selection in the previous step. Once the model is optimized, then it is evaluated on the validation set. We choose such model, which has the highest metrics score and/or lowest cost functions. This results in $n^2$ tuned models, assuming we have $n$ input models.
+
+Once we select the best, final model which performs the best on the validation set, we then build as fitting it on the join training a and validation set. Finally, we evaluate the fitted model on the set by calculating several metrics such as F1 score, Recall, Precision, Accuracy, AUC etc.
+
 ![alt_text](https://github.com/petr-ngn/Data_X_2022/blob/main/flowchart_data_x.png?raw=true)
 
 ## Data Preprocessing
