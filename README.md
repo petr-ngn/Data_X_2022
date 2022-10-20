@@ -102,7 +102,7 @@ Once we select the best, final model which performs the best on the validation s
 ## Data Preprocessing
 Following the data exploration, we deem reasonable to remove found duplicates (counting 6 rows) and 1 row containing errornous category _EE_ in _stalk-shape_ feature. As mentioned, we also remapped the features' categories with they full names.
 
-After the data split into training set, validation set and test set (70%; 15%; 15%); we have to convert the categorical features into numerical ones. For this case, we use `optbinning` package, which is available [here](https://github.com/guillermo-navas-palencia/optbinning). It uses optimal binning with respect to the target variable by rigorous and flexible mathematical programming formulation - in other words, it optimally groups the features' categories into bins. It can be either used for continuous features, where instead of grouping, the data will be optimally split into interval bins.
+After the data split into training set, validation set and test set (70%; 15%; 15%); we have to convert the categorical features into numerical ones. For this case, we use `optbinning` package, which is available [here](https://github.com/guillermo-navas-palencia/optbinning). It uses optimal binning with respect to the target variable by rigorous and flexible mathematical programming formulation - in other words, it optimally groups the features' categories into bins. It can be either used for continuous features, where instead of grouping, the data will be optimally split into interval bins. We perform the Binning Process by fitting it on the traning set with subsequent trasnforming of the traniing, validation and test set (based on the training set).
 
 Once it bins the categories, we decide to transform these bins into numerical values by using Weight-of-Evidence Encoding which is commonly used in credit risk modelling and works better than dummy encoding when having larger amount of variables and categories/bins.
 
@@ -110,9 +110,13 @@ After such transformation, we then exclude such features which do have only one 
 
 ## Feature selection
 TBD (Bayesian Optimization + RFE; fit on training set)
+Once we have our data prepared, we move to the next step which the feature selection. We use an iterative process - each model with default hyperparameters is tuned using Bayesian Optimization with Stratified 10-fold Cross Validation. Afterwards, such tuned model is then used within Recursive Feature Elimination (RFE) with 10-fold Cross Validation which outputs a set of optimal features. Both tuning and feature selection is being conducted on the training set while maximizing an objective function of F1 score. Assuming $n$ models, we end up with $n$ sets of optimal features.
 
-## Final Model Selection
+## Final Model Selection and Final Model Building.
 TBD (Bayesian Optimization; fit on training set with selected features by RFE; evaluation on validation set)
+The next step is the selection of the final model. Again we use an iterative process - each model with default hyperparameters is tuned on ach set of features selected within RFE in the previous step, particularly on training set. This optimization is again being conducted on the training set while maximizing an objective function of F1 score. Then, each tuned model is then evaluated on the validation set. We select the final model based on the best scores evaluated on the validation set.
+
+This final model is then built/fitted on the joined training and validation set.
 
 ## Evaluation
 TBD (evaluation on test set; confusion matrix, F1/Recall/Precision/Accuracy/AUC/Gini/Brier, Kolmogorov-Smirnov, ROC Curve, Learning Curve, SHAP values).
