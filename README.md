@@ -50,7 +50,7 @@ model_loaded = pickle.load(open('model.h5', 'rb'))
 ### Importing the auxiliary functions
 _The functions have been built with Python version 3.9.13_
 
-Download the `src_PN folder` and the `final_notebook_aux_functions_imported.ipynb` notebook (they need to be stored in the same path/location). Or you can clone this whole repository using Git.
+Download the `src_PN` folder and the `final_notebook_aux_functions_imported.ipynb` notebook (they need to be stored in the same path/location). Or you can clone this whole repository using Git.
 
 ```
 ├── Your location
