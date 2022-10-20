@@ -93,7 +93,8 @@ TBD
 ![alt_text](https://github.com/petr-ngn/Data_X_2022/blob/main/flowchart_data_x.png?raw=true)
 
 ## Data Preprocessing
-Following the data exploration, we deem reasonable to remove found duplicates (counting 6 rows) and 1 row containing errornous category _EE_ in _stalk-shape_ feature. As mentioned, we also remapped the features' categories with they full names.__
+Following the data exploration, we deem reasonable to remove found duplicates (counting 6 rows) and 1 row containing errornous category _EE_ in _stalk-shape_ feature. As mentioned, we also remapped the features' categories with they full names.
+
 After the data split into training set, validation set and test set (70%; 15%; 15%); we have to convert the categorical features into numerical ones. For this case, we use `optbinning` package, which is available [here](https://github.com/guillermo-navas-palencia/optbinning). It uses optimal binning with respect to the target variable by rigorous and flexible mathematical programming formulation - in other words, it optimally groups the features' categories into bins. It can be either uses for continuous features, where instead of grouping, the data will be optimally split into interval bins.
 
 Once it bins the categories, we decide to transform these bins into numerical values by using Weight-of-Evidence Encoding which is commonly used in credit risk modelling and works better than dummy encoding when having larger amount of variables and categories/bins.
