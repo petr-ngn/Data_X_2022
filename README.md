@@ -42,13 +42,13 @@ Such tasks include data understanding and exploration, data preprocessing with f
 ```
 
 ### Installing the enviroment
-First of all before running any scripts or notebooks, you should first install the enviroment. Ideally, you should create a new enviroment using Python version 3.9.13, since all the functions and module used in our notebooks have been running on such version.
+First of all before running any scripts or notebooks, you should first install the enviroment. Ideally, you should create a new enviroment using version `Python 3.9.13`, since all the functions and module used in our notebooks have been running on such version.
 
 You can create such enviroment in Anaconda, in the terminal as:
 ```bash
 conda create -n yourenv python=3.9.13
 ```
-Once you have created your own enviroment, you should then install all the packages with correct versions which have been used in our notebooks and on which the module has been built as well. This is being done with requirements.txt which you can find this repository. You should then download this file, open the Anaconda terminal, activate your enviroment as:
+Once you have created your own enviroment, you should then install all the packages with correct versions which have been used in our notebooks and on which the module has been built as well. This is being done with the `requirements.txt` which you can find this repository. You should then download this file, open the Anaconda terminal, activate your enviroment as:
 
 ```bash
 conda activate yourenv
