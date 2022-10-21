@@ -253,13 +253,20 @@ def dependency_analysis(data, var1, var2 = 'class', alpha = 0.05):
     Outputs:
         - Print of the p-value and result of hypothesis testing.
         - Data frame of the frequency table.
+        - Data frame of the expected values which specify what the values of each cell of the frequency table would be if there was no association between the two variables.
     
     """
 
 
-    data_crosstab = pd.crosstab(data[var1], data[var2], margins = False)
+    data_crosstab = pd.crosstab(data[var1], data[var2], margins = False).rename(columns = {'edible': 'observed values - edible',
+                                                                                            'poisonous': 'observed values - poisonous'})
 
     chi2, p, dof, expected = chi2_contingency(data_crosstab, correction = False)
+
+    expected_df = pd.DataFrame(expected, index = data_crosstab.index)
+    expected_df.columns = ['expected values - edible', 'expected values - poisonous']
+
+    joined_crosstab_expected = pd.concat((data_crosstab, expected_df), axis = 1)
 
     print(f'The p-value is {p}.')
 
@@ -268,7 +275,7 @@ def dependency_analysis(data, var1, var2 = 'class', alpha = 0.05):
     else:
         print(f'Result: We fail to reject the null hypothesis: There is no relationship between {var1} and {var2}, thus they are independent.')
 
-    return data_crosstab
+    return joined_crosstab_expected
 
 
 
