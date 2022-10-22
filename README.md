@@ -19,7 +19,7 @@ Such tasks include data understanding and exploration, data preprocessing with f
 │    ├── preprocessed.csv      	      <- Final preprocessed data after Binning, WoE transformation and feature selection.
 │    ├── raw.csv                      <- The original, immutable data dump.
 │
-├── models   <- models which have been trained/fitted within out project (including objects for feature transformation and selection).
+├── models   <- models and objects which have been fitted within out project.
 │    │
 │    ├── binning_woe_model.h5         <- Optimal Binning and WoE transformation object (for feature preprocessing).
 │    ├── feature_selection_model.h5   <- Optimized model used within feature selection (RFE).
