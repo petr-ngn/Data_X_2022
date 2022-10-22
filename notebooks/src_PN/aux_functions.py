@@ -461,7 +461,7 @@ def woe_bins_plot(bins_woe,x_set):
     for i, ax in zip(list(x_set.columns), axs.ravel()):
     
         temp = bins_woe.loc[bins_woe['Variable'] == i]
-        sns.barplot(x = temp.index, y = 'WoE', data = temp, ax = ax, palette = "ch:.25")
+        sns.barplot(x = temp.index, y = 'WoE', data = temp, ax = ax, palette = "ch:.25_r")
  
         labels = [str(k.tolist()).replace('[','').replace(']','').replace("'",'') for k in temp['Bin']]
         
