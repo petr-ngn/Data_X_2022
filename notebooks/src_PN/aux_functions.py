@@ -822,7 +822,7 @@ def hyperparameter_tuning(x_train, y_train, x_val, y_val, models_dict, feat_sel,
                                 len(final_features), final_features, end - start]+evs_list)
             
             print(f'Tuned hyperparameters of {name}:', opt_mod.get_params())
-            print('F1 Score on Validation set:', evs_list[-1])
+            print('F1 Score on Validation set:', evs_list[0])
             print('Execution time:', round(end - start), 'seconds')
             print('-------------------------------------------------------------------------------------------------------------------', '\n')
 
@@ -990,7 +990,7 @@ def evaluation_metrics(x_set, true_labels, model, metrics_list):
         raise ValueError('These metrics are not acceptable'.format(list(set(metrics_list) - set(list(metrics.keys())))))
 
     probs_evs = ['AUC','Brier']
-    class_evs = ['Precision','Recall','F1']
+    class_evs = ['Precision','Recall','F1', 'Accuracy']
     evs_list = []
     
     for met in metrics_list:
