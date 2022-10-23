@@ -97,7 +97,7 @@ After the feature selection, we perform the selection of the final model. For ea
 
 Once we select the best, final model which performs the best on the validation set, we then build as fitting it on the join training a and validation set. Finally, we evaluate the fitted model on the set by calculating several metrics such as F1 score, Recall, Precision, Accuracy, AUC etc.
 
-![alt_text](https://raw.githubusercontent.com/petr-ngn/Data_X_2022/ea7efc782afb54528488a307015b57c252915563/ML_flowchart.png)
+![alt_text](https://github.com/petr-ngn/Data_X_2022/blob/main/ML_flowchart.png?raw=true)
 
 ## Data Preprocessing
 Following the data exploration, we deem reasonable to remove found duplicates (counting 6 rows) and 1 row containing errornous category _EE_ in _stalk-shape_ feature. As mentioned, we also remapped the features' categories with they full names.
@@ -119,7 +119,7 @@ The next step is the selection of the final model. Again we use an iterative pro
 
 This final model is then built/fitted on the joined training and validation set which do have only the optimal features which are related to this final model (on which the final model has been fitted on the training set within the final model selection).
 
-![alt_text](https://github.com/petr-ngn/Data_X_2022/blob/main/Final_model_chart.png?raw=true)
+![alt_text](https://github.com/petr-ngn/Data_X_2022/blob/main/final_model_selection.png?raw=true)
 
 
 ## Evaluation
