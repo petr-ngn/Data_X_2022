@@ -12,6 +12,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from typing import Union
 
 from optbinning import BinningProcess
 
@@ -25,6 +26,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.base import BaseEstimator
 
 from sklearn.metrics import roc_auc_score, precision_score, f1_score, recall_score, brier_score_loss, confusion_matrix, roc_curve, accuracy_score
 
@@ -32,11 +34,17 @@ from scipy.stats import chi2_contingency, ks_2samp
 import shap
 
 
+ScikitModel = Union[
+    BaseEstimator,
+    RandomForestClassifier, 
+    LogisticRegression, 
+    GradientBoostingClassifier, 
+    DecisionTreeClassifier
+    ]
 
 
 
-
-def reading_data(file_path = None):
+def reading_data(file_path: str = None) -> pd.DataFrame:
 
     """
 
@@ -58,20 +66,16 @@ def reading_data(file_path = None):
     
     """
 
-    if file_path != None:
-        data = pd.read_csv(file_path)
+    if file_path:
+        return pd.read_csv(file_path)
 
-    else:
-        data = pd.read_csv('https://raw.githubusercontent.com/petr-ngn/Data_X_2022/main/data/raw.csv')
-
-    
-    return data
+    return pd.read_csv('https://raw.githubusercontent.com/petr-ngn/Data_X_2022/main/data/raw.csv')
 
 
 
 
 
-def removing_duplicates(data):
+def removing_duplicates(data: pd.DataFrame) -> pd.DataFrame:
     
     """
 
@@ -93,7 +97,7 @@ def removing_duplicates(data):
 
 
 
-def reading_cats_names_kaggle(file_path = None):
+def reading_cats_names_kaggle(file_path: str = None) -> pd.DataFrame:
 
     """
 
@@ -116,66 +120,40 @@ def reading_cats_names_kaggle(file_path = None):
         
     """
 
-    if file_path != None:
+    if file_path:
         with open (file_path, 'r') as f:
             contents = f.read()
     
     else:
-        #Extracting the text from the txt file.
+        # Get contents from uploaded txt file
         url = "https://raw.githubusercontent.com/petr-ngn/Data_X_2022/main/data/category_names_kaggle.txt"
         page = requests.get(url)
         contents = page.text
     
-    col_dict = {}
+    df_dict = {}
 
-    #For each split row (where row has following format ... variable: full category name=initials of category name):
-    for c in contents.split('\n'):
-        cats_dict = {}
-        #Extracting column name.
-        col = c.split(':')[0]
-        #Extracting the categories' full names and their initials..
-        cats_temp = c.split(':')[1].split(',')
-        cats = []
+    for line in contents.split(f'\n'):
+        # line structure follows logic of `col_nm: full_name1=initial1, full_name2=initial2, ...`
+        col_nm = re.findall(r'(.*)(?=:)', line)[0]
+        df_dict[col_nm] = {
+            'Initials': re.findall(r'(?<==)[a-zA-Z?]', line),
+            'Full name': re.findall(r'[a-zA-Z]+(?==)', line)
+        }
 
-        #For each pair full name category=category initials, split the full name and the initials from the strings.
-        for cc in cats_temp:
-            cats.append(cc.strip())
-
-        #Separate both categories' full names and initials and assign to the new variables.
-        cats_short = [i.split('=')[1] for i in cats]
-        cats_full = [i.split('=')[0] for i in cats]
-
-        #Storing the full name underneath the initial name:
-        for k,v in zip(cats_short, cats_full):
-            cats_dict[k] = v
-
-        #Storing the full name-initials dictionary underneath the column dictionary.
-        col_dict[col] = cats_dict
-
-    df_col_desc = pd.DataFrame(columns = ['Initials','Full name'])
-
-    #Storing the full names, initials with the variable names as row indices into a dataframe.
-    for k in col_dict.keys():
-        temp_df = pd.DataFrame(pd.Series(col_dict[k],index=col_dict[k].keys()),
-                                columns = ['Full name']).reset_index().rename(columns = {'index':'Initials'})
-                                
-        temp_df = temp_df.set_index(pd.Index([k for i in range(temp_df.shape[0])]))
-        df_col_desc = pd.concat((df_col_desc, temp_df))
-
-    return df_col_desc
+    return pd.DataFrame.from_dict(df_dict, orient='index').explode(['Initials', 'Full name'])
 
 
 
 
 
-def mapping_cat_names(raw_data, cat_names_df):
+def mapping_cat_names(df: pd.DataFrame, cat_names_df: pd.DataFrame) -> pd.DataFrame:
 
     """
     
     Function for mapping the full categories' names to the initials. (for better readability of both data and plots)
 
     Arguments:
-        raw_data - Data frame of raw data which contains initials of categories (which we want to replace with the full name of categories).
+        df - Data frame of raw data which contains initials of categories (which we want to replace with the full name of categories).
         cat_names_df - Data frame which contains the feature names, the initials of its categories and the full names of its categories - output from the function reading_cats_names_kaggle()
 
     Output:
@@ -183,20 +161,21 @@ def mapping_cat_names(raw_data, cat_names_df):
 
     """
 
-    data = raw_data.copy()
+    cpy = df.copy()
 
-    for col in list(data.columns):
-   
-        data[col] = data[col].replace(list(cat_names_df.loc[col,'Initials']),
-                                    list(cat_names_df.loc[col,'Full name']))
-                                    
-    return data
+    for col in cpy.columns:
+        cpy[col] = cpy[col].replace(
+            cat_names_df.loc[col,'Initials'].to_numpy(), 
+            cat_names_df.loc[col,'Full name'].to_numpy()
+        )
 
-
-
+    return cpy
 
 
-def feat_dist_plot(data, conditional = False):
+
+
+
+def feat_dist_plot(data: pd.DataFrame, conditional = False) -> None:
     
     """
 
@@ -235,7 +214,7 @@ def feat_dist_plot(data, conditional = False):
 
 
 
-def dependency_analysis(data, var1, var2 = 'class', alpha = 0.05):
+def dependency_analysis(data: pd.DataFrame, var1: str, var2 = 'class', alpha = 0.05) -> pd.DataFrame:
 
     
     """
@@ -281,7 +260,7 @@ def dependency_analysis(data, var1, var2 = 'class', alpha = 0.05):
 
 
 
-def data_split(data_to_split, seed, valid = False):
+def data_split(data_to_split: pd.DataFrame, seed: int, valid = False):
     
     """
 
@@ -301,7 +280,7 @@ def data_split(data_to_split, seed, valid = False):
     data = data_to_split.copy()
 
     #Mapping the 'edible' or 'e' class as 1 and 'poisonous' or 'p' as 0 otherwise.    
-    data['class'] = data['class'].apply(lambda x: 1 if re.search("e", x) != None else 0)
+    data['class'] = data['class'].apply(lambda x: 1 if re.search("e", x) else 0)
 
     #Extracting features data and labels data.
     Y = data['class']
@@ -323,7 +302,13 @@ def data_split(data_to_split, seed, valid = False):
 
 
 
-def binning(x_train_set, y_train_labels, x_holdout_set, cat_vars, save_binning_woe_model = False):
+def binning(
+    x_train_df: pd.DataFrame, 
+    y_train_labels: Union[pd.Series, np.ndarray], 
+    x_holdout_df: pd.DataFrame, 
+    cat_vars: list, 
+    save_binning_woe_model = False
+    ) -> tuple:
 
     """
 
@@ -333,53 +318,55 @@ def binning(x_train_set, y_train_labels, x_holdout_set, cat_vars, save_binning_w
         - The output also includes a data frame which stores all the information about the binned categories (such as grouped categories names, event rate, WoE etc.) for each variable.
 
     Arguments:
-        x_train_set - Data frame of features used for training the model.
+        x_train_df - Data frame of features used for training the model.
         y_train_labels - Data frame or Series of labels used for training the model.
-        x_holdout_set -   Data frame of features which is not used in the training the model (for instance, Validation set or Test set of features).
-        cat_vars - List of the categorical features in x_train_set.
+        x_holdout_df -   Data frame of features which is not used in the training the model (for instance, Validation set or Test set of features).
+        cat_vars - List of the categorical features in x_train_df.
         save_binning_woe_model - True if we want to export the fitted Binning object in h5 format, otherwise False.
 
     Outputs (3 outputs):
         x_train_binned - Transformed training set of features with the binned categories which are transformed into WoE values.
-        x_holdout_set_binned - Transformed Validation/Test set of features with the binned categories which are transformed into WoE values. (based on the fitted Binning object on training set).
+        x_holdout_binned - Transformed Validation/Test set of features with the binned categories which are transformed into WoE values. (based on the fitted Binning object on training set).
         woe_bins - Data frame which contains information about binned features' categories (including WoE values, number of events/non-events, category frequencies etc.).
 
     """
 
     #Initializing the binning process object.
-    bn = BinningProcess(variable_names = list(x_train_set.columns), categorical_variables = cat_vars)
+    bn = BinningProcess(variable_names = x_train_df.columns.to_numpy(), categorical_variables = cat_vars)
 
     #Fitting the binning on training set.
-    bn.fit(x_train_set,y_train_labels)
+    if isinstance(y_train_labels, pd.Series):
+        y_train_labels = y_train_labels.to_numpy() # library expects array-like
+    bn.fit(x_train_df,y_train_labels)
 
     #Transforming both training set and test set based on the fitted training binning.
-    x_train_binned = bn.transform(x_train_set, metric='woe')
-    x_train_binned.index = x_train_set.index
-    x_holdout_set_binned = bn.transform(x_holdout_set, metric='woe')
-    x_holdout_set_binned.index = x_holdout_set.index
+    x_train_binned = bn.transform(x_train_df, metric='woe')
+    x_train_binned.index = x_train_df.index
+    x_holdout_binned = bn.transform(x_holdout_df, metric='woe')
+    x_holdout_binned.index = x_holdout_df.index
 
     bins_woe = pd.DataFrame()
     
     #DataFrame including binned categories' information.
-    for i in x_train_set.columns:
+    for col in x_train_df.columns:
         
-        var = bn.get_binned_variable(i).binning_table.build()
+        var = bn.get_binned_variable(col).binning_table.build()
         var = var[(~var['Bin'].isin(['Special', 'Missing'])) & (~var.index.isin(['Totals']))]
-        var['Variable'] = i
+        var['Variable'] = col
 
-        bins_woe = pd.concat((bins_woe, var))
+        bins_woe = pd.concat([bins_woe, var])
         
     if save_binning_woe_model:
         bn.save('binning_woe_model.h5')
 
         
-    return x_train_binned, x_holdout_set_binned, bins_woe.loc[:,~bins_woe.columns.isin(['IV','JS'])]
+    return x_train_binned, x_holdout_binned, bins_woe.loc[:,~bins_woe.columns.isin(['IV','JS'])]
 
 
 
 
 
-def prep_data_export(features, labels, ind_sets, export = False, csvname = ''):
+def prep_data_export(features: list, labels: list, ind_sets: list, export = False, csvname = '') -> pd.DataFrame:
 
     """
 
@@ -398,17 +385,15 @@ def prep_data_export(features, labels, ind_sets, export = False, csvname = ''):
 
     """
 
-    df_list = []
+    dfs = []
     
     #Join each pair of features and labels data, assign to it a set indicator, append to the list and then, transform that list into a data frame (and export it).
     for feat, lab, ind in zip(features, labels, ind_sets):
         
         temp = pd.concat((lab, feat), axis = 1)
         temp['set'] = ind
-        df_list.append(temp)
+        dfs.append(temp)
     
-    dfs = [df for df in df_list]
-
     if export:
         pd.concat(dfs, axis=0).sort_index().to_csv(csvname+'.csv', index = False)
     
@@ -418,7 +403,7 @@ def prep_data_export(features, labels, ind_sets, export = False, csvname = ''):
 
 
 
-def drop_cols(bins_woe, *args):
+def drop_cols(bins_woe: pd.DataFrame, *args) -> None:
     
     """
     
@@ -442,7 +427,7 @@ def drop_cols(bins_woe, *args):
 
 
 
-def woe_bins_plot(bins_woe,x_set):
+def woe_bins_plot(bins_woe: pd.DataFrame, x_train_binned: pd.DataFrame) -> None:
 
     """
 
@@ -458,13 +443,11 @@ def woe_bins_plot(bins_woe,x_set):
 
     fig, axs = plt.subplots(nrows = 6, ncols = 3, figsize = (15, 20))
 
-    for i, ax in zip(list(x_set.columns), axs.ravel()):
+    for i, ax in zip(list(x_train_binned.columns), axs.ravel()):
     
         temp = bins_woe.loc[bins_woe['Variable'] == i]
         sns.barplot(x = temp.index, y = 'WoE', data = temp, ax = ax, palette = "ch:.25")
- 
-        labels = [str(k.tolist()).replace('[','').replace(']','').replace("'",'') for k in temp['Bin']]
-        
+        labels = [", ".join(x) for x in temp['Bin']]
         ax.set_title(i)
         ax.set_xticklabels(labels,rotation=50,size=10)
 
@@ -475,13 +458,13 @@ def woe_bins_plot(bins_woe,x_set):
 
 
 
-def cats_indicators(x_set, bins_woe, target_class = 'edible'):
+def cats_indicators(df: pd.DataFrame, bins_woe: pd.DataFrame, target_class = 'edible') -> pd.DataFrame:
 
     """
     Function outputs a data frame of variables' categories, which should have implied a target class (based on WoE coefficient).
     
     Arguments:
-        x_set - Data frame containing features data (from this data frame, we extract the columns' names - the features' names).
+        df - Data frame containing features data (from this data frame, we extract the columns' names - the features' names).
         bins_woe - Data frame which contains information about binned features' categories (including WoE values).
         target_class = 'edible' or 'poisonous' - if former, then we filter categories having negative WoE and vice versa.
 
@@ -493,37 +476,36 @@ def cats_indicators(x_set, bins_woe, target_class = 'edible'):
 
     #Filter the subset of features' categories which satisfy the WoE-target_class condition.
     if target_class == 'edible':
-        filtered_woe_bins = bins_woe[bins_woe['WoE']<= 0]
+        filtered_woe_bins = bins_woe[bins_woe['WoE'] <= 0]
 
     elif target_class == 'poisonous':
         filtered_woe_bins = bins_woe[bins_woe['WoE'] >= 0]
 
-    var_cats_dict = {}
+    feat_cats_dict = {}
 
     #For each feature, store all the categories into one list which will be append to the final data frame together with the feature name.
-    for var in x_set.columns:
+    for col in df.columns:
 
         #If the given variable does not have any categories which would satisfy the condition, then pass.
-        if filtered_woe_bins.loc[filtered_woe_bins['Variable'] == var, 'Bin'].shape[0] == 0:
-            pass
+        if filtered_woe_bins.loc[filtered_woe_bins['Variable'] == col, 'Bin'].shape[0] == 0:
+            continue
 
-        else:
-            cats_list = []
+        cats = ", ".join(filtered_woe_bins.loc[filtered_woe_bins['Variable'] == col, 'Bin'].explode().tolist())
+        feat_cats_dict[col] = cats
 
-            for i in filtered_woe_bins.loc[filtered_woe_bins['Variable'] == var, 'Bin']:
-                for j in i.tolist():
-                    
-                    cats_list.append(j)
-
-            var_cats_dict[var] = ', '.join(cats_list)
-
-    return pd.DataFrame(var_cats_dict.items(), columns=['Features', 'Categories'])
+    return pd.DataFrame(feat_cats_dict.items(), columns=['Features', 'Categories'])
 
 
 
 
 
-def bayesian_optimization(model, x_train, y_train, seed, max_features_constraint = False):
+def bayesian_optimization(
+    model: ScikitModel, 
+    x_train: pd.DataFrame, 
+    y_train: pd.DataFrame, 
+    seed: int, 
+    max_features_constraint = False
+    ) -> ScikitModel:
 
     """
 
@@ -553,58 +535,49 @@ def bayesian_optimization(model, x_train, y_train, seed, max_features_constraint
 
 
     #Defining a searching space of possible ranges of hyperparameters, given the model.
-    if type(model) == type(RandomForestClassifier()):
 
-        search_space = {
-                        'n_estimators': Integer(1, 1000),
-                        'criterion': Categorical(['gini', 'entropy']),
-                        'max_depth': Integer(1, 15),
-                        'max_features': Integer(3, max_features),
-                        'min_samples_leaf': Integer(5, 500)
-                        }
+    search_space_cfg = {
+        RandomForestClassifier: {
+            'n_estimators': Integer(1, 1000),
+            'criterion': Categorical(['gini', 'entropy']),
+            'max_depth': Integer(1, 15),
+            'max_features': Integer(3, max_features),
+            'min_samples_leaf': Integer(5, 500)
+        },
+        GradientBoostingClassifier: {
+            'n_estimators': Integer(1, 1000),
+            'max_depth': Integer(1, 15),
+            "learning_rate":Real(0.001, 100),
+            'min_samples_leaf': Integer(5, 500),
+            'max_features': Integer(3, max_features)
+        },
+        LogisticRegression: {
+            'fit_intercept':  Categorical([True, False]),
+            'C': Real(0.001, 1000)
+        },
+        DecisionTreeClassifier: {
+            'criterion': Categorical(['gini', 'entropy']),
+            'max_depth': Integer(1, 15),
+            'max_features': Integer(3, max_features),
+            'min_samples_leaf': Integer(5, 500)
+        }
+    }
 
-
-    elif type(model) == type(GradientBoostingClassifier()):
-
-        search_space = {
-                        'n_estimators': Integer(1, 1000),
-                         'max_depth': Integer(1, 15),
-                         "learning_rate":Real(0.001, 100),
-                         'min_samples_leaf': Integer(5, 500),
-                         'max_features': Integer(3, max_features)
-                        }
-
-
-    elif type(model) == type(LogisticRegression()):
-
-        search_space = {
-                        'fit_intercept':  Categorical([True, False]),
-                        'C': Real(0.001, 1000)
-                        }
-
-
-    elif type(model) == type(DecisionTreeClassifier()):
-        
-        search_space = {
-                        'criterion': Categorical(['gini', 'entropy']),
-                        'max_depth': Integer(1, 15),
-                        'max_features': Integer(3, max_features),
-                        'min_samples_leaf': Integer(5, 500)
-                        }
-    
+    search_space = search_space_cfg[model.__class__]
 
     #Initialization of the stratified 10-fold cross validation.
     cv = StratifiedKFold(n_splits = 10, shuffle = True, random_state = seed)
 
     #Initialization of the Bayesian Optimization, using the stratified 10-fold cross validation and given model, while maximizing the objective function F1 score.
     bayescv = BayesSearchCV(
-                                    estimator = estimator,
-                                    search_spaces = search_space,
-                                    scoring = "f1", cv = cv,
-                                    n_jobs = -1, n_iter = 50,
-                                    verbose = 0, refit = True,
-                                    random_state = seed
-                                    )
+        estimator = estimator,
+        search_spaces = search_space,
+        scoring = "f1", cv = cv,
+        n_jobs = -1, n_iter = 50,
+        verbose = 0, refit = True,
+        random_state = seed
+    )
+
     #Fitting the Bayesian optimization algorithm on the training data.
     bayescv.fit(x_train, y_train)
 
@@ -615,7 +588,12 @@ def bayesian_optimization(model, x_train, y_train, seed, max_features_constraint
 
 
 
-def feat_selection(x_train, y_train, models_dict, seed):
+def feat_selection(
+    x_train: pd.DataFrame, 
+    y_train: pd.DataFrame, 
+    models_dict: dict, 
+    seed: int
+    ) -> pd.DataFrame:
 
     """
 
@@ -664,7 +642,7 @@ def feat_selection(x_train, y_train, models_dict, seed):
         #adjustment of the min_features_to_select parameter within the RFE based on the tuned max_features hyperparameter, otherwise it would raise an error.
         if any("features" in s for s in opt_mod.get_params()):
             for par in list(opt_mod.get_params()):
-                if re.search('features', par) != None:
+                if re.search('features', par):
                     num_feats = opt_mod.get_params()[par]
                     break
         else:
@@ -691,21 +669,28 @@ def feat_selection(x_train, y_train, models_dict, seed):
         
         print('Execution time:', round(end - start), 'seconds')
         print(number_features, 'features selected:', selected_feats, '\n')
-        print('-------------------------------------------------------------------------------------------------------------------', '\n')
+        print('-'*100 + '\n')
         
         models_feats_list.append([name, rfecv.estimator_, rfecv, number_features, selected_feats, end - start])
     
     #Storing all the models with their tuned hyperparameters, number of features selected, and names of selected features.
-    feat_sel = pd.DataFrame(models_feats_list, columns = ['model_name', 'model', 'rfe_model',
-                                    'n_features','final_features', 'execution_time'])
-
-    return feat_sel
-
+    return pd.DataFrame(models_feats_list, columns = [
+        'model_name', 'model', 'rfe_model','n_features','final_features', 'execution_time'
+        ])
 
 
 
 
-def hyperparameter_tuning(x_train, y_train, x_val, y_val, models_dict, feat_sel, seed):
+
+def hyperparameter_tuning(
+    x_train: pd.DataFrame, 
+    y_train: pd.DataFrame, 
+    x_val: Union[pd.DataFrame, pd.Series], 
+    y_val: Union[pd.DataFrame, pd.Series], 
+    models_dict: dict, 
+    feat_sel: pd.DataFrame, 
+    seed: int
+    ) -> pd.DataFrame:
     
     """
 
@@ -795,30 +780,33 @@ def hyperparameter_tuning(x_train, y_train, x_val, y_val, models_dict, feat_sel,
             print(f'Tuned hyperparameters of {name}:', opt_mod.get_params())
             print('F1 Score on Validation set:', evs_list[-1])
             print('Execution time:', round(end - start), 'seconds')
-            print('-------------------------------------------------------------------------------------------------------------------', '\n')
+            print('-'*100 + '\n')
 
 
-    hyp_df = pd.DataFrame(tuned_list,
-                columns = ['tuned_model_name', 'fs_model_name', 'fs_model','tuned_model',
-                                'rfe_model', 'n_features', 'final_features', 'execution_time']
-                                +list(metrics.keys())
-                            ).sort_values(
-
-                                        ['F1', 'Precision', 'Recall', 'Accuracy',
-                                        'AUC', 'Gini', 'KS', 'Brier'],
-
-                                        ascending = [False, False, False, False,
-                                                    False, False, False, True]
-
-                                        ).reset_index(drop = True)
-
-    return hyp_df
+    return pd.DataFrame(
+        tuned_list,
+        columns = [
+            'tuned_model_name', 'fs_model_name', 'fs_model', 'tuned_model',
+            'rfe_model', 'n_features', 'final_features', 'execution_time', *metrics.keys()
+        ]
+        ).sort_values(
+            ['F1', 'Precision', 'Recall', 'Accuracy','AUC', 'Gini', 'KS', 'Brier'],
+            ascending = [False, False, False, False,False, False, False, True]
+        ).reset_index(drop = True)
 
 
 
 
 
-def data_filter_join(hyp_tuning_df, x_train, x_valid, x_test, y_train, y_valid, model_order = 0):
+def data_filter_join(
+    hyp_tuning_df: pd.DataFrame, 
+    x_train: pd.DataFrame, 
+    x_valid: pd.DataFrame, 
+    x_test: pd.DataFrame, 
+    y_train: Union[pd.DataFrame, pd.Series], 
+    y_valid: Union[pd.DataFrame, pd.Series], 
+    model_order = 0
+    ) -> tuple:
 
     """
 
@@ -852,7 +840,13 @@ def data_filter_join(hyp_tuning_df, x_train, x_valid, x_test, y_train, y_valid, 
 
 
 
-def final_model_fit(x_fit, y_fit, hyp_tuning_df, model_order = 0, save_models = [False, False, False]):
+def final_model_fit(
+    x_fit: pd.DataFrame, 
+    y_fit: pd.DataFrame, 
+    hyp_tuning_df: pd.DataFrame,
+    model_order = 0, 
+    save_models = [False, False, False]
+    ) -> ScikitModel:
 
     """
     Function for building/fitting the final, tuned, chosen model on the joined training and validation sets.
@@ -905,7 +899,7 @@ def final_model_fit(x_fit, y_fit, hyp_tuning_df, model_order = 0, save_models = 
 
 
 
-def conf_mat(y_actuals, model, sample):
+def conf_mat(y_actuals: pd.DataFrame, model: ScikitModel, sample: pd.DataFrame) -> pd.DataFrame:
 
     """
 
@@ -921,16 +915,21 @@ def conf_mat(y_actuals, model, sample):
         
     """
 
-    confm = pd.DataFrame(confusion_matrix(y_actuals, model.predict(sample))).rename(
-                                            columns = {0: 'Predicted - Poisonous',1: 'Predicted - Edible'},
-                                            index = {0: 'Actual - Poisonous', 1: 'Actual - Edible'})
-    return confm
+    return pd.DataFrame(confusion_matrix(y_actuals, model.predict(sample))).rename(
+        columns = {0: 'Predicted - Poisonous',1: 'Predicted - Edible'},
+        index = {0: 'Actual - Poisonous', 1: 'Actual - Edible'}
+    )
 
 
 
 
 
-def evaluation_metrics(x_set, true_labels, model, metrics_list):
+def evaluation_metrics(
+    x_set: pd.DataFrame, 
+    true_labels: Union[pd.DataFrame, pd.Series],
+    model: ScikitModel, 
+    metrics_list: list
+    ) -> pd.DataFrame:
 
     """
 
@@ -982,7 +981,7 @@ def evaluation_metrics(x_set, true_labels, model, metrics_list):
 
 
 
-def ROC_curve_plot(y_test_true, x_test, model):
+def ROC_curve_plot(y_test_true: pd.DataFrame, x_test: pd.DataFrame, model: ScikitModel) -> None:
 
     """
 
@@ -1022,7 +1021,12 @@ def ROC_curve_plot(y_test_true, x_test, model):
 
 
 
-def learning_curve_plot(model, x_set, y_set, seed):
+def learning_curve_plot(
+    model: ScikitModel, 
+    x_set: pd.DataFrame, 
+    y_set: pd.DataFrame, 
+    seed: int
+    ) -> None:
 
     """
 
@@ -1038,10 +1042,13 @@ def learning_curve_plot(model, x_set, y_set, seed):
 
     """
     
-    train_sizes, train_scores, test_scores = learning_curve(model, x_set, y_set,
-                                                    cv = 10, scoring = 'f1',
-                                                    train_sizes = np.linspace(0.01, 1.0, 100),
-                                                    random_state = seed)
+    train_sizes, train_scores, test_scores = learning_curve(
+        model, x_set, y_set, 
+        cv = 10, 
+        scoring = 'f1', 
+        train_sizes = np.linspace(0.01, 1.0, 100), 
+        random_state = seed
+    )
 
     train_mean = np.mean(train_scores, axis = 1)
     train_std = np.std(train_scores, axis = 1)
@@ -1080,7 +1087,7 @@ def learning_curve_plot(model, x_set, y_set, seed):
 
 
 
-def shap_plots(x_set, model):
+def shap_plots(x_set: pd.DataFrame, model: ScikitModel) -> None:
 
     """
 
@@ -1095,16 +1102,22 @@ def shap_plots(x_set, model):
 
     """
 
-    if type(model) in [type(RandomForestClassifier()), type(DecisionTreeClassifier()), type(GradientBoostingClassifier())]:
+    shap_values = None
+
+    if isinstance(model, (RandomForestClassifier, DecisionTreeClassifier, GradientBoostingClassifier)):
         shap_values = shap.TreeExplainer(model).shap_values(x_set)
 
-        if type(model) == type(GradientBoostingClassifier()):
-            shap.summary_plot(shap_values, x_set.values, feature_names = x_set.columns)
+    if shap_values and isinstance(model, GradientBoostingClassifier):
+        shap.summary_plot(shap_values, x_set.values, feature_names = x_set.columns)
 
-        elif type(model) == type(RandomForestClassifier()):
-            shap.summary_plot(shap_values[1], x_set.values, feature_names = x_set.columns)
+    if shap_values and isinstance(model, RandomForestClassifier):
+        shap.summary_plot(shap_values[1], x_set.values, feature_names = x_set.columns)
 
-    elif type(model) == type(LogisticRegression()):
-        shap.summary_plot(shap.LinearExplainer(model,
-                                        shap.maskers.Independent(data = x_set)).shap_values(x_set),
-                                        x_set.values, feature_names = x_set.columns)
+    if isinstance(model, LogisticRegression):
+        shap.summary_plot(
+            shap.LinearExplainer( 
+                model, shap.maskers.Independent(data = x_set)
+            ).shap_values(x_set),
+            x_set.values, feature_names = x_set.columns
+        )
+    
