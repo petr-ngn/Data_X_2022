@@ -112,6 +112,8 @@ After such transformation, we then exclude such features which do have only one 
 ## Feature selection
 Once we have our data prepared, we move to the next step which the feature selection. We use an iterative process - each model with default hyperparameters is tuned using Bayesian Optimization with Stratified 10-fold Cross Validation. Afterwards, such tuned model is then used within Recursive Feature Elimination (RFE) with 10-fold Cross Validation which outputs a set of optimal features. Both tuning and feature selection is being conducted on the training set while maximizing an objective function of F1 score. Assuming $n$ models, we end up with $n$ sets of optimal features.
 
+![alt_text](https://github.com/petr-ngn/Data_X_2022/blob/main/feature_selection.png?raw=true)
+
 ## Final Model Selection and Final Model Building.
 The next step is the selection of the final model. Again we use an iterative process - each model with default hyperparameters is tuned on ach set of features selected within RFE in the previous step, particularly on training set. This optimization is again being conducted on the training set while maximizing an objective function of F1 score. Then, each tuned model is then evaluated on the validation set. We select the final model based on the best scores evaluated on the validation set.
 
