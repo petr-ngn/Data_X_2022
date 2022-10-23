@@ -119,6 +119,9 @@ The next step is the selection of the final model. Again we use an iterative pro
 
 This final model is then built/fitted on the joined training and validation set which do have only the optimal features which are related to this final model (on which the final model has been fitted on the training set within the final model selection).
 
+![alt_text](![Uploading image.png…](![image](https://user-images.githubusercontent.com/110040418/197368684-c3fce2ff-86e0-49c1-ab68-e3f9c8ac54e8.png)
+
+
 ## Evaluation
 Once the model is built, we then evalute it on the hold out set - test set. We calculate such metrics which can be derived from the confusion matrix, such as Accuracy, Precision, Recall or F1 score. We also calculate other metrics which can be derived from the estimated probabilities, such as AUC, Gini coefficient, Kolmogorov-Smirnov test or Brier score loss.
 
