@@ -51,7 +51,8 @@ def reading_data(file_path = None):
                         (2) with forward slashes (/) or,
                         (3) put letter r in front of the string.
         
-                        More information about the solution can be found here: https://stackoverflow.com/questions/1347791/unicode-error-unicodeescape-codec-cant-decode-bytes-cannot-open-text-file"
+                        More information about the solution can be found here:
+                https://stackoverflow.com/questions/1347791/unicode-error-unicodeescape-codec-cant-decode-bytes-cannot-open-text-file"
 
     Output:
         - Data frame of raw data.
@@ -109,7 +110,8 @@ def reading_cats_names_kaggle(file_path = None):
                     (2) with forward slashes (/) or,
                     (3) put letter r in front of the string.
 
-                    More information about the solution can be found here: https://stackoverflow.com/questions/1347791/unicode-error-unicodeescape-codec-cant-decode-bytes-cannot-open-text-file"
+                    More information about the solution can be found here:
+            https://stackoverflow.com/questions/1347791/unicode-error-unicodeescape-codec-cant-decode-bytes-cannot-open-text-file"
 
     Output:
         Data frame which contains the feature names, the initials of its categories and the full names of its categories.
@@ -176,8 +178,9 @@ def mapping_cat_names(raw_data, cat_names_df):
 
     Arguments:
         raw_data - Data frame of raw data which contains initials of categories (which we want to replace with the full name of categories).
-        cat_names_df - Data frame which contains the feature names, the initials of its categories and the full names of its categories - output from the function reading_cats_names_kaggle()
-
+        cat_names_df - Data frame which contains the feature names, the initials of its categories and the full names of its categories
+                        - It is the output from the function reading_cats_names_kaggle()
+        
     Output:
         Data frame of the input data which contains full categories' names.
 
@@ -252,8 +255,10 @@ def dependency_analysis(data, var1, var2 = 'class', alpha = 0.05):
 
     Outputs:
         - Print of the p-value and result of hypothesis testing.
-        - Data frame of the frequency table.
-        - Data frame of the expected values which specify what the values of each cell of the frequency table would be if there was no association between the two variables.
+        - Data frame of:
+            - frequency/contigency table.
+            - expected values specifying what the values of each cell of frequency table would be...
+                    - ... if there was no association between the two variables.
     
     """
 
@@ -294,7 +299,7 @@ def data_split(data_to_split, seed, valid = False):
         valid - Optional argument - If True, the data will be split into training, validation and test set; Otherwise into training and test set.
     
     Outputs:
-        4 or 6 Data frames (respectively 2 (or) 3 Data frames and 2 (or 3) Series) - features data split into training, (validation), test sets and the same also applies for the target data.
+        4 or 6 Data frames of features and target data split into training, (validation), test sets.
 
     """
 
@@ -310,7 +315,7 @@ def data_split(data_to_split, seed, valid = False):
     #Returning training, validation and test features and labels data (70%/15%/15%)
     if valid:
         X_temp, X_test, y_temp, y_test = train_test_split(X, Y, stratify = Y, test_size = 0.15, random_state = seed)
-        X_train, X_valid, y_train, y_valid = train_test_split(X_temp, y_temp, stratify = y_temp,test_size = 0.1275, random_state = seed)
+        X_train, X_valid, y_train, y_valid = train_test_split(X_temp, y_temp, stratify = y_temp, test_size = 0.1275, random_state = seed)
 
         return X_train, X_valid, X_test, y_train, y_valid, y_test
 
@@ -327,22 +332,28 @@ def binning(x_train_set, y_train_labels, x_holdout_set, cat_vars, save_binning_w
 
     """
 
-    Function for binning the variables optimally with respect to the target variable, based on implementation of a rigorous and flexible mathematical programming formulation.
-        - It is fitted on the training set, based on which it transforms both training and holdout set with binning (grouping) the categories for each variable.
-        - Subsequently, all the categories are transformed to the numerical values, using the Weight-of-Evidence (which is fitted from the training set as well).
-        - The output also includes a data frame which stores all the information about the binned categories (such as grouped categories names, event rate, WoE etc.) for each variable.
+    Function for binning the variables optimally with respect to the target variable
+            - based on implementation of a rigorous and flexible mathematical programming formulation.
+        - It is fitted on  training set, based on which it transforms both training and holdout set,
+            - with binning (grouping) the categories for each variable.
+        - Subsequently, all the categories are transformed to the numerical values, using the Weight-of-Evidence
+            - (which is fitted from the training set as well).
+        - The output also includes a data frame which stores all the information about the binned categories,
+            - (such as grouped categories names, event rate, WoE etc.) for each variable.
 
     Arguments:
         x_train_set - Data frame of features used for training the model.
         y_train_labels - Data frame or Series of labels used for training the model.
-        x_holdout_set -   Data frame of features which is not used in the training the model (for instance, Validation set or Test set of features).
+        x_holdout_set - Data frame of features which is not used in the training the model (for instance, Validation set or Test set of features).
         cat_vars - List of the categorical features in x_train_set.
         save_binning_woe_model - True if we want to export the fitted Binning object in h5 format, otherwise False.
 
     Outputs (3 outputs):
         x_train_binned - Transformed training set of features with the binned categories which are transformed into WoE values.
-        x_holdout_set_binned - Transformed Validation/Test set of features with the binned categories which are transformed into WoE values. (based on the fitted Binning object on training set).
-        woe_bins - Data frame which contains information about binned features' categories (including WoE values, number of events/non-events, category frequencies etc.).
+        x_holdout_set_binned - Transformed Validation/Test set of features with the binned categories which are transformed into WoE values.
+                                - (based on the fitted Binning object on training set).
+        woe_bins - Data frame which contains information about binned features' categories
+                    - (including WoE values, number of events/non-events, category frequencies etc.).
 
     """
 
@@ -383,13 +394,14 @@ def prep_data_export(features, labels, ind_sets, export = False, csvname = ''):
 
     """
 
-    Function for joining the X train, X validation, X test sets of features and y train, y validation and y test sets of labels into a single data frame.
+    Function for joining the X train/validation/test sets of features and y train/validation/y test sets of labels into a single data frame.
      - Optionally, it can also export this joined data set into csv file.
 
     Arguments:
         features - list of data frames of features ... e.g., [X_train, X_valid, X_test]
         labels - list of series or data frames of labels ... e.g., [y_train, y_valid, y_set]
-        ind_sets - list of sets names ... e.g., ['Training', 'Validation', 'Test'] -> this will distinguish the instances in the data frame (which instance belongs to training set etc.)
+        ind_sets - list of sets names ... e.g., ['Training', 'Validation', 'Test']
+                    - this will distinguish the instances in the data frame (which instance belongs to training set etc.)
         export - True if we want to export the joined data set into csv format, otherwise False
         csvname - The name of the csv file.
     
@@ -400,7 +412,10 @@ def prep_data_export(features, labels, ind_sets, export = False, csvname = ''):
 
     df_list = []
     
-    #Join each pair of features and labels data, assign to it a set indicator, append to the list and then, transform that list into a data frame (and export it).
+    
+    #Join each pair of features and labels data, assign to it a set indicator,
+        # append to the list and then,
+        #  transform that list into a data frame (and export it).
     for feat, lab, ind in zip(features, labels, ind_sets):
         
         temp = pd.concat((lab, feat), axis = 1)
@@ -527,7 +542,8 @@ def bayesian_optimization(model, x_train, y_train, seed, max_features_constraint
 
     """
 
-    This function tunes hyperparameters of a model using Bayesian Optimization while maximizing objective function F1 score, and it is tuned on the training set.
+    This function tunes hyperparameters of a model using Bayesian Optimization while maximizing objective function F1 score.
+        - It is tuned on the training set.
         - It is tuned using Stratified 10-fold Cross Validation.
 
     Arguments:
@@ -536,9 +552,12 @@ def bayesian_optimization(model, x_train, y_train, seed, max_features_constraint
         y_train - Data frame (or series) which contains labels for training the model.
         seed - Globally defined random seed in order to preserve the reproducibility.
         max_features_constraint - This argument needs to bet set to True when tuning model which has hypeparameter max_features
-                                - It can raise a value error in hyperparameter tuning within selection of final model, when max_features is higher than the number of features in the sammple.
-                                        - "ValueError: max_features must be in (0, n_features]"
-                                        - This issue can occur when model A chooses 5 features in the feature selection, but when tuning model B on the sample having 5 features chosen by model B, during tuning the max_features can exceed the number of features.
+                                - It can raise a value error in hyperparameter tuning within selection of final model,...
+                                        -  ... when max_features is higher than the number of features in the sample:
+                                                - "ValueError: max_features must be in (0, n_features]"
+                                        - This issue can occur when model A chooses 5 features in the feature selection,..
+                                                - but when tuning model B on the sample having 5 features chosen by model B,..
+                                                - during tuning the max_features can exceed the number of features.
                                         - Therefore, the max_features needs to be adjusted accordingly to the number of features within given sample.
     
     Output:
@@ -596,15 +615,15 @@ def bayesian_optimization(model, x_train, y_train, seed, max_features_constraint
     #Initialization of the stratified 10-fold cross validation.
     cv = StratifiedKFold(n_splits = 10, shuffle = True, random_state = seed)
 
-    #Initialization of the Bayesian Optimization, using the stratified 10-fold cross validation and given model, while maximizing the objective function F1 score.
-    bayescv = BayesSearchCV(
-                                    estimator = estimator,
-                                    search_spaces = search_space,
-                                    scoring = "f1", cv = cv,
-                                    n_jobs = -1, n_iter = 50,
-                                    verbose = 0, refit = True,
-                                    random_state = seed
-                                    )
+    #Initialization of the Bayesian Optimization.
+        # using the stratified 10-fold cross validation and given model, while maximizing the objective function F1 score.
+    bayescv = BayesSearchCV(estimator = estimator,
+                            search_spaces = search_space,
+                            scoring = "f1", cv = cv,
+                            n_jobs = -1, n_iter = 50,
+                            verbose = 0, refit = True,
+                            random_state = seed)
+
     #Fitting the Bayesian optimization algorithm on the training data.
     bayescv.fit(x_train, y_train)
 
@@ -621,9 +640,11 @@ def feat_selection(x_train, y_train, models_dict, seed):
 
     This function is used for feature selection using RFE which requires some model as an input.
 
-    This function takes each model, tunes it hyperparameters using Bayesian Optimization with 10-fold Cross Validation (defined in the previous step - tuned on the training set),...
-        ... and then uses this tuned model for Recursive Feature Elimination (RFE) with 10-fold Cross Validation to choose the optimal set of features (performed on the training set) ...
-    
+    This function takes each model, tunes it hyperparameters using Bayesian Optimization with 10-fold Cross Validation.
+                        - (defined in the previous step - tuned on the training set).
+        - Then uses this tuned model for Recursive Feature Elimination (RFE) with 10-fold Cross Validation.
+                        - in order to choose the optimal set of features (performed on the training set).
+        
     If we have 4 models as an input, then we get 4 different sets of optimal features.
 
     Arguments:
@@ -637,7 +658,7 @@ def feat_selection(x_train, y_train, models_dict, seed):
             Columns:
                 model_name - The name of the model (the model within the models_dict parameter)
                 model - The model itself with the tuned hyperparameters which then has been used within RFE (feature selection)
-                rfe_model - RFE object itself (when applying transform() method, it should transform given X_set on on the X set with optimal features).
+                rfe_model - RFE object itself (when applying transform() method, it should transform given X set on X set with optimal features).
                 n_features - Number of features selected by RFE.
                 final_features - The list of features selected by RFE.
                 execution_time - How long it takes to tune model's hyperparameters and choose the optimal features (in seconds).
@@ -647,7 +668,8 @@ def feat_selection(x_train, y_train, models_dict, seed):
     #Empty list for storing all the models with their tuned hyperparameters, number of features selected, and names of selected features.
     models_feats_list = []
 
-    #For each model, tune its hyperparameters using Bayesian Optimization, and then use the tuned model for feature selection using RFE while maximizing an objective function F1 Score.
+    #For each model, tune its hyperparameters using Bayesian Optimization.
+        # Then use the tuned model for feature selection using RFE while maximizing an objective function F1 Score.
     for name, mod in models_dict.items():
         print(f'Starting Feature Selection with {name} ...', '\n')
 
@@ -661,7 +683,8 @@ def feat_selection(x_train, y_train, models_dict, seed):
         #Initialization of the stratified 10-fold cross validation.
         cv = StratifiedKFold(n_splits = 10, shuffle = True, random_state = seed)
 
-        #adjustment of the min_features_to_select parameter within the RFE based on the tuned max_features hyperparameter, otherwise it would raise an error.
+        #adjustment of the min_features_to_select parameter within the RFE based on the tuned max_features hyperparameter
+            # otherwise it would raise an error.
         if any("features" in s for s in opt_mod.get_params()):
             for par in list(opt_mod.get_params()):
                 if re.search('features', par) != None:
@@ -672,8 +695,8 @@ def feat_selection(x_train, y_train, models_dict, seed):
 
         print(f'Starting Recursive Feature Elimination with {name} ...')
 
-        #Initialization of the Recursive Feature Elimination 10-fold Cross Validation in order to select the optimal number of features,...
-            # ... based on the model with tuned hyperparameters and maximizing F1 score function.
+        #Initialization of the Recursive Feature Elimination 10-fold Cross Validation in order to select the optimal number of features
+            # based on the model with tuned hyperparameters and maximizing F1 score function.
         rfecv = RFECV(
                     estimator = opt_mod, step = 1,
                     min_features_to_select = num_feats,
@@ -717,21 +740,24 @@ def hyperparameter_tuning(x_train, y_train, x_val, y_val, models_dict, feat_sel,
         x_val - Data frame which contains features used for evaluation on validation set. (to select the final model)
         y_val -  Data frame (or series) which contains labels evaluation on validation set. (to select the final model)
         models_dict - Dictionary where the keys are model names and the values are the model objects with default hyperparameters.
-        feat_sel - Data frame outputted by feat_selection() function, which contains data about each model such as the model name, model itself tuned within feature selection, number and name of the final features.
+        feat_sel - Data frame outputted by feat_selection() function which contains data about:
+                    - each model such as model name, model itself tuned within feature selection, number and name of final features.
         seed - Globally defined random seed in order to preserve the reproducibility.
 
-    For each model (with default hyperparameters) and for each set of selected features (by RFEE), tune its hyperparameters on the training set with given selected features,...
+        For each model (with default hyperparameters) and for each set of selected features (by RFE),
+        ... tune its hyperparameters on training set with given selected features,...
         ... and then use this optimized model for evaluation on validation set.
-    Thus, each model should be fit on 4 different set of features, hence for each model, we should have 4 different sets of tuned hyperparameters (i.e., 4 different models).
-
+    Thus, each model should be fit on 4 different set of features.
+        - hence for each model, we should have 4 different sets of tuned hyperparameters (4 different models), resulting in 16 tuned models.
+    
     Output:
         Data frame:
             Columns:
                 tuned_model_name - The name of the tuned model (the model within the models_dict parameter)
-                fs_model_name - The name of the model which has been used in the feature selection (which entered the RFE-CV in the previous step).
+                fs_model_name - The name of the model which has been used in feature selection (which entered the RFE-CV in the previous step).
                 fs_model - The model from feature selection itself (with given hyperparameters which were tuned within feature selection).
-                tuned_model - The tuned model itself (the final model which will be tuned in this phase and then will be evaluated on validation set).
-                rfe_model - RFE model itself (when applying transform() method, it should transform given X_set on on the X set with optimal features).
+                tuned_model - The tuned model itself (the final model which will be tuned in this phase and then evaluated on validation set).
+                rfe_model - RFE model itself (when applying transform() method, it should transform given X set on X set with optimal features).
                 n_features - Number of features (in the training set) on which the tuned_model has been trained.
                 final_features - The list of features on which the tuned_model has been trained.
                 execution_time - How long it takes to tuned hyperparameters model (in seconds).
@@ -756,7 +782,8 @@ def hyperparameter_tuning(x_train, y_train, x_val, y_val, models_dict, feat_sel,
     
     tuned_list = []
     
-    #For each model, optimize it on the subset of optimal features on training set, and the evaluate it on validation set with filtered features (using set of several metrics).
+    #For each model, optimize it on the subset of optimal features on training set,
+        # and then evaluate it on validation set with filtered features (using set of several metrics).
     for name, mod in models_dict.items():
         
         for i in range(feat_sel.shape[0]):
@@ -785,12 +812,14 @@ def hyperparameter_tuning(x_train, y_train, x_val, y_val, models_dict, feat_sel,
                 elif metric == 'KS':
                     X_Y_concat = pd.concat((y_val,X_val_filtered), axis = 1)
                     X_Y_concat['prob'] =  opt_mod.predict_proba(X_val_filtered)[:, 1]
-                    evs_list.append(ks_2samp(X_Y_concat.loc[X_Y_concat['class'] == 1, 'prob'], X_Y_concat.loc[X_Y_concat['class'] == 0, 'prob'])[0])
+                    evs_list.append(ks_2samp(X_Y_concat.loc[X_Y_concat['class'] == 1, 'prob'],
+                                            X_Y_concat.loc[X_Y_concat['class'] == 0, 'prob'])[0])
 
 
             print(f'Bayesian Optimization finished ...')
 
-            tuned_list.append([name, fs_name, fs_mod, opt_mod, rfecv, len(final_features), final_features, end - start]+evs_list)
+            tuned_list.append([name, fs_name, fs_mod, opt_mod, rfecv,
+                                len(final_features), final_features, end - start]+evs_list)
             
             print(f'Tuned hyperparameters of {name}:', opt_mod.get_params())
             print('F1 Score on Validation set:', evs_list[-1])
@@ -822,10 +851,12 @@ def data_filter_join(hyp_tuning_df, x_train, x_valid, x_test, y_train, y_valid, 
 
     """
 
-    Function which joins the training and validation sets of features and labels into one set, and then filters only the relevant final features only (the latter also applies to the test set as well).
+    Function which joins the training and validation sets of features and labels into one set.
+        - then filters only the relevant final features only (the latter also applies to the test set as well).
  
     Arguments:
-        hyp_tuning_df
+        hyp_tuning_df - Data frame outputted by hyperparameter_tuning() function
+                      - contains data about each tuned model such as the model name, model itself, number and name of the final features, scores.
         x_train - Data frame of training set of features data.
         x_valid - Data frame of validation set of features data.
         x_test - Data frame of test set of features data.
@@ -861,7 +892,8 @@ def final_model_fit(x_fit, y_fit, hyp_tuning_df, model_order = 0, save_models = 
     Arguments:
         x_fit - Data frame containing features data, on which the data will be trained.
         y_fit - Data frame/Series containing label data, on which the data will be trained.
-        hyp_tuning_df - Data frame outputted by hyperparameter_tuning() function, which contains data about the each tuned model such as the model name, model itself, number and name of the final features, scores etc.
+        hyp_tuning_df - Data frame outputted by hyperparameter_tuning() function.
+                      - contains data about each tuned model such as the model name, model itself, number and name of the final features, scores.
         model_order - by default 0, is we want to select the highest ranked model (which has row index 0 in hyp_tuning_df)
         save_models - list of 3 Booleans which indicates whether to save given models in the h5 format.
             - 1st Boolean for saving the tuned feature selection model.
@@ -872,9 +904,6 @@ def final_model_fit(x_fit, y_fit, hyp_tuning_df, model_order = 0, save_models = 
         - fitted model
 
     """
-
-    if sorted(save_models) not in [[True, True, True], [False, False, False], [False, True, True], [False, False, True]]:
-        raise ValueError('The only possible inputs of save_models parameter are: [True, True], [True, False], [False, True], [False, False].')
     
     final_model = hyp_tuning_df.loc[model_order,"tuned_model"]
 
@@ -934,7 +963,8 @@ def evaluation_metrics(x_set, true_labels, model, metrics_list):
 
     """
 
-    Function for outputting a data frame which depicts a list of evaluation metrics and scores of given model, based on the dataset on which the model is being evaluated.
+    Function for outputting a data frame which depicts a list of evaluation metrics and scores of given model.
+        - based on the dataset on which the model is being evaluated.
     
     Arguments:
         x_set - Data frame of test data of features.
@@ -973,7 +1003,8 @@ def evaluation_metrics(x_set, true_labels, model, metrics_list):
         elif met == 'KS':
             X_Y_concat = pd.concat((true_labels, x_set), axis=1)
             X_Y_concat['prob'] =  model.predict_proba(x_set)[:, 1]
-            evs_list.append([met,  metrics[met](X_Y_concat.loc[X_Y_concat['class'] == 1, 'prob'], X_Y_concat.loc[X_Y_concat['class'] == 0, 'prob'])[0]])
+            evs_list.append([met,  metrics[met](X_Y_concat.loc[X_Y_concat['class'] == 1, 'prob'],
+                                                X_Y_concat.loc[X_Y_concat['class'] == 0, 'prob'])[0]])
 
             
     return pd.DataFrame(evs_list, columns = ['Metric', 'Score'])
