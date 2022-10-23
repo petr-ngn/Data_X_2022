@@ -121,3 +121,4 @@ This final model is then built/fitted on the joined training and validation set 
 Once the model is built, we then evalute it on the hold out set - test set. We calculate such metrics which can be derived from the confusion matrix, such as Accuracy, Precision, Recall or F1 score. We also calculate other metrics which can be derived from the estimated probabilities, such as AUC, Gini coefficient, Kolmogorov-Smirnov test or Brier score loss.
 
 Besides, we also construct a ROC curve and Learning curve to depict the model performance, as well as the plot of SHAP values to depict the contributions of features to a prediction.
+
