@@ -2,7 +2,7 @@
 
 Repository for the project within the course **Data-X – Applied Data Analytics Models in Real World Tasks (4IT439)**, at Faculty of Informatics and Statistics, Prague University of Economics and Business (VŠE). Such project is conducted using Python.
 
-_**Authors:**_ [**Petr Nguyen**](https://www.linkedin.com/in/petr-ngn/), Lukas Dolezal, Roman Pavlata, Patrik Korsch, Daniel Bihany
+_**Authors:**_ [**Petr Nguyen**](https://www.linkedin.com/in/petr-ngn/), [**Lukas Dolezal**](https://www.linkedin.com/in/lukas-dolezal75/), [**Roman Pavlata**](https://www.linkedin.com/in/roman-pavlata-a3b602161/), [**Patrik Korsch**](https://www.linkedin.com/in/patrik-korsch/), [**Daniel Bihany**](https://www.linkedin.com/in/daniel-bih%C3%A1ny-a2a095202/)
 
 _**Deadline:**_ 24/10/2022
 
