@@ -1,4 +1,4 @@
-# Data-X Project 2022 - Mushroom classification
+# Data-X Project 2022 - Mushroom classification 
 
 Repository for the project within the course **Data-X – Applied Data Analytics Models in Real World Tasks (4IT439)**, at Faculty of Informatics and Statistics, Prague University of Economics and Business (VŠE). Such project is conducted using Python.
 
