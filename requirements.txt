@@ -12,7 +12,7 @@ executing==1.1.1
 fonttools==4.37.4
 idna==3.4
 ipykernel==6.16.0
-ipython==8.5.0
+ipython==8.10.0
 jedi==0.18.1
 joblib==1.2.0
 jupyter-core==4.11.1
