@@ -10,7 +10,7 @@ decorator==5.1.1
 entrypoints==0.4
 executing==1.1.1
 fonttools==4.60.2
-idna==3.7
+idna==3.15
 ipykernel==6.16.0
 ipython==8.10.0
 jedi==0.18.1
